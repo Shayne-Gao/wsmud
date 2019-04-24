@@ -951,13 +951,13 @@
                 KEY.onRoomItemAction(5);
             });
             //ctrl
-            this.add(49 + 1024, function () {
+            this.add(90, function () {
                 KEY.room_commands(0);
             });
-            this.add(50 + 1024, function () {
+            this.add(88, function () {
                 KEY.room_commands(1);
             });
-            this.add(51 + 1024, function () {
+            this.add(67, function () {
                 KEY.room_commands(2);
             });
             this.add(52 + 1024, function () {
@@ -6050,7 +6050,7 @@
                         "mp0": {
                             name: "豪宅",
                             callback: function (key, opt) {
-                                WG.go("住房");
+                                WG.go("住房-小花园");
                             },
                         },
                         "mp11": {
@@ -6080,7 +6080,7 @@
                         "mp3": {
                             name: "帮派",
                             callback: function (key, opt) {
-                                WG.go("扬州城-帮派");
+                                WG.go("帮会-练功房");
                             },
                         },
                         "mp4": {
@@ -6140,9 +6140,9 @@
                             callback: function (key, opt) {
                                 let myDate = new Date();
                                 if (myDate.getHours() >= 17) {
-                                    WG.go("华山派-客厅");
+                                    WG.go("华山派-落雁峰");
                                 } else {
-                                    WG.go("华山派-镇岳宫");
+                                    WG.go("华山派-落雁峰");
                                 }
                             },
                         },
@@ -6162,7 +6162,7 @@
                             callback: function (key, opt) {
                                 let myDate = new Date();
                                 if (myDate.getHours() >= 17) {
-                                    WG.go("逍遥派-地下石室");
+                                    WG.go("逍遥派-青草坪");
                                 } else {
                                     WG.go("逍遥派-青草坪");
                                 }
@@ -6188,7 +6188,7 @@
                         "mp7": {
                             name: "杀手楼",
                             callback: function (key, opt) {
-                                WG.go("杀手楼-大门");
+                                WG.go("杀手楼-银楼");
                             },
                         }
                     },
