@@ -4360,12 +4360,12 @@
 
             if (silence == "开") {
                 if (data.type == 'state') {
-                    let title =  "wsmud";
+                    let title =  "";
                     let state = data.state;
                     if (data.state == null) {
                         state = '空闲'
                     }
-                    document.title = `${role}<${state}> ${title}`;
+                    document.title = `${role}|${state>`;
                     oldTitle = document.title;
                     if (data.silence == undefined) {
                         if (data.desc != []) {
