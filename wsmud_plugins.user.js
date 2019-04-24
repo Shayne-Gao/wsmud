@@ -4365,7 +4365,7 @@
                     if (data.state == null) {
                         state = '空闲'
                     }
-                    document.title = `${role}|${state>`;
+                    document.title = `${role}-${state}`;
                     oldTitle = document.title;
                     if (data.silence == undefined) {
                         if (data.desc != []) {
