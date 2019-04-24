@@ -600,6 +600,7 @@
                 $(`<span>备用</span>`),
                 $(`<span>刷新数据</span>`).click(function() {
                      refreshScore();
+                     layoutSkill()
                      async function refreshScore() {
                          $("[command=score]").click();
                          await fn.sleep(100);
