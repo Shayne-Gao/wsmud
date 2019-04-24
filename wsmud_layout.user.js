@@ -603,6 +603,10 @@
                      async function refreshScore() {
                          $("[command=score]").click();
                          await fn.sleep(100);
+			 $("[for=1]").click();
+			await fn.sleep(100);
+			$("[for=0]").click();
+			await fn.sleep(100);
                          $("[command=skills]").click();
                          await fn.sleep(100);
                          $("[command=pack]").click();
