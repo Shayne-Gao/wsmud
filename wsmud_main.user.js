@@ -4361,7 +4361,7 @@
             if (silence == "开") {
                 if (data.type == 'state') {
                     let title =  "";
-                    let state = data.state;
+                    let state = data.state.slice(3);
                     if (data.state == null) {
                         state = '空闲'
                     }
