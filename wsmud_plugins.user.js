@@ -686,6 +686,9 @@
             this.add(32, function () {
                 KEY.dialog_confirm();
             });
+             this.add(70, function () {
+                KEY.dialog_confirm();
+            });
             this.add(83, function () {
                 KEY.do_command("stopstate");
             });
@@ -2354,9 +2357,12 @@
                 var w = $(".room_items .room-item:last");
                 var t = w.text();
                 if (t.indexOf("守护者") != -1) {
+                    //如果血量小于50 则自动打坐先
+                    WG.SendCmd("@liaoshang");
                     WG.Send("kill " + w.attr("itemid"));
                     WG.wudao_autopfm();
                 } else {
+
                     WG.Send("go up");
                 }
             }
@@ -2408,6 +2414,7 @@
             return prompt("请输入需要秒进秒退的副本次数", "");
         },
         grove_auto: function (needG = null) {
+            return prompt("暂时停用，太浪费精力了", "");
             if (timer == 0) {
                 if (needG == null) {
                     this.needGrove = this.grove_ask_info();
@@ -4361,11 +4368,13 @@
             if (silence == "开") {
                 if (data.type == 'state') {
                     let title =  "";
-                    let state = data.state.slice(3);
+                    let state = data.state;
+                    let shortState = `${state}`.substring(3,5);
+                    let shortRole = `${role}`.substring(0,1);
                     if (data.state == null) {
                         state = '空闲'
                     }
-                    document.title = `${role}-${state}`;
+                    document.title = `${shortRole}<${shortState}>`;
                     oldTitle = document.title;
                     if (data.silence == undefined) {
                         if (data.desc != []) {
@@ -6068,7 +6077,11 @@
                         "mp1": {
                             name: "当铺",
                             callback: function (key, opt) {
-                                WG.go("扬州城-当铺");
+                                if (WG.at("扬州城-当铺")) {
+                                    WG.SendCmd("list %唐楠%");
+                                } else {
+                                    WG.SendCmd("$to 扬州城-当铺;$wait 200;list %唐楠%");
+                                }
                             },
                         },
                         "mp2": {
