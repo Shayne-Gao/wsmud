@@ -1,6 +1,19 @@
 # wsmud
 武神传说相关的插件
 
+# 使用说明
+安装油猴之后，一次点击下面3个链接
+## 主框架构
+
+https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_plugins.user.js
+## 页面增强、小功能、学习练习计算
+https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_layout.user.js
+
+## 自动副本模块
+https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_raid.user.js
+
+
+
 # 更新记录 
 2019年4月25日 
 - 增加F绑定确认
@@ -22,3 +35,7 @@
 # todo：
 增加关闭按钮大小，方便手机
 角色信息内容太长的问题
+
+
+# 版权说明
+本插件为基于wsmud_pluginss的私人更改优化版本，原插件版权归原作者所有。严禁商用。
