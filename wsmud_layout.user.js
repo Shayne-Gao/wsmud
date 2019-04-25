@@ -383,7 +383,7 @@
                     let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
                     $(".remove_lx").remove();
                     // 练习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋练习效率%－先天悟性%）
-                    $(".content-message pre").append(`练习${name}消耗了${parseInt(qianneng / time / 12)}点潜能。\n`);
+                    $(".content-message pre").append(`练习${name}消耗了${parseInt(qianneng / time / 12)}点潜能。当前等级:${level}\n`);
                     $(".content-message pre").append(`<span class="remove_lx">角色悟性: ${xtwx}＋${htwx}\n练习效率: ${lxxl}%\n等级上限: ${djsx}级\n需要潜能: ${qianneng}\n需要时间: ${timeString}\n</span>`);
                     fn.scroll(".content-message");
                 } else if (funny.state === "你正在读书") {
@@ -393,7 +393,7 @@
                     if (funny.data.id === "j9h729c52bc") {
                         let time = qianneng / cost / 12;
                         let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
-                        $(".content-message pre").append(`练满时间 => ${timeString}\n`);
+                        $(".content-message pre").append(`练满时间 => ${timeString} 当前等级:${level}\n`);
                     }
                     fn.scroll(".content-message");
                 }else if (funny.state.startWith("你正在学习")) {
@@ -404,7 +404,7 @@
                         let leftTime = ownQN / cost / 12
                         let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
                         let leftTimeString = leftTime < 60 ? `${parseInt(leftTime)}分钟` : `${parseInt(leftTime / 60)}小时${parseInt(leftTime % 60)}分钟`;
-                    $(".content-message pre").append(`练满时间 => ${timeString}  潜能耗尽时间 => ${leftTimeString}\n`);
+                    $(".content-message pre").append(`练满时间 => ${timeString}  潜能耗尽时间 => ${leftTimeString} 当前等级:${level}\n`);
                     fn.scroll(".content-message");
                 }
             }
@@ -604,16 +604,16 @@
                      async function refreshScore() {
                          $("[command=score]").click();
                          await fn.sleep(100);
-			 $("[for=1]").click();
-			await fn.sleep(100);
-			$("[for=0]").click();
-			await fn.sleep(100);
+                         $("[for=1]").click();
+                         await fn.sleep(100);
+                         $("[for=0]").click();
+                         await fn.sleep(100);
                          $("[command=skills]").click();
                          await fn.sleep(100);
-                         $("[command=pack]").click();
-                         await fn.sleep(100);
+                        // $("[command=pack]").click();
+                       //  await fn.sleep(100);
                          $("[command=tasks]").click();
-                         await fn.sleep(1000);
+                         await fn.sleep(500);
                          $(".dialog-close").click();
                      };
                 }),
