@@ -604,14 +604,14 @@
                      async function refreshScore() {
                          $("[command=score]").click();
                          await fn.sleep(100);
-			 $("[for=1]").click();
-			await fn.sleep(100);
-			$("[for=0]").click();
-			await fn.sleep(100);
+                     $("[for=1]").click();
+                    await fn.sleep(100);
+                    $("[for=0]").click();
+                    await fn.sleep(100);
                          $("[command=skills]").click();
                          await fn.sleep(100);
-                         $("[command=pack]").click();
-                         await fn.sleep(100);
+                     //    $("[command=pack]").click();
+                       //  await fn.sleep(100);
                          $("[command=tasks]").click();
                          await fn.sleep(1000);
                          $(".dialog-close").click();
@@ -803,6 +803,6 @@
         GM_addStyle(`.msg{height:auto;overflow:auto;flex: 0 0 auto;font-size:14px;line-height:16px;max-height:160px;}`);
         GM_addStyle(`.chat{flex:1 1 auto;max-height:100%;}`);
         //增加关闭按钮大小
-         GM_addStyle(`.glyphicon{width:200px;}`);
+//:         GM_addStyle(`.glyphicon{width:200px;}`);
     });
 })();
