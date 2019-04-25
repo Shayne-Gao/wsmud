@@ -1142,6 +1142,10 @@
             return false;
         },
         login: function () {
+            //为底边栏点击绑定一个dialog_close事件
+            $(".state-bar").on('click', function () {
+                 $(".dialog-close").click();
+            });
             role = $('.role-list .select').text().split(/[\s\n]/).pop();
             $(".bottom-bar").append("<span class='item-commands' style='display:none'><span WG='WG' cmd=''></span></span>"); //命令行模块
             var html = UI.wgui();
