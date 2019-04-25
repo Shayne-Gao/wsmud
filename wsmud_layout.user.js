@@ -604,15 +604,6 @@
                      async function refreshScore() {
                          $("[command=score]").click();
                          await fn.sleep(100);
-<<<<<<< HEAD
-                     $("[for=1]").click();
-                    await fn.sleep(100);
-                    $("[for=0]").click();
-                    await fn.sleep(100);
-                         $("[command=skills]").click();
-                         await fn.sleep(100);
-                     //    $("[command=pack]").click();
-=======
                          $("[for=1]").click();
                          await fn.sleep(100);
                          $("[for=0]").click();
@@ -620,9 +611,8 @@
                          $("[command=skills]").click();
                          await fn.sleep(100);
                         // $("[command=pack]").click();
->>>>>>> ce313f266bcd21e03230dd79dc52d0ce3197a953
                        //  await fn.sleep(100);
-                         $("[command=tasks]").click();
+                       //  $("[command=tasks]").click();
                          await fn.sleep(500);
                          $(".dialog-close").click();
                      };
