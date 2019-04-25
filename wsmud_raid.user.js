@@ -1,14 +1,13 @@
 // ==UserScript==
 // @name            wsmud_Raid
 // @namespace       cqv
-// @version         2.4.6
+// @version         2.4.8
 // @date            23/12/2018
 // @modified        15/02/2019
 // @homepage        https://greasyfork.org/zh-CN/scripts/375851
 // @description     武神传说 MUD
 // @author          Bob.cn
-// @match           http://game.wsmud.com/*
-// @match           http://www.wsmud.com/*
+// @match           http://*.wsmud.com/*
 // @run-at          document-end
 // @require         https://cdn.staticfile.org/vue/2.2.2/vue.min.js
 // @grant           unsafeWindow
@@ -3199,6 +3198,17 @@ stopSSAuto->`
     }
 
     const Dungeons = [
+
+
+         {
+            name: "武道塔",
+            source: `
+jh fam 9 start;go enter
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd
+$killall
+`
+        },
         {
             name: "华山论剑",
             source: `
@@ -3235,6 +3245,8 @@ go south
 @kill 闻苍松
 go east;go south
 @kill 说不得,彭莹玉
+[if] (_DungeonWaitSkillCD) == 打开
+   @cd
 go north[2]
 @kill 韦一笑,殷天正
 [if] (_DungeonWaitSkillCD) == 打开
