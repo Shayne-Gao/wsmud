@@ -1143,7 +1143,7 @@
         },
         login: function () {
             //为底边栏点击绑定一个dialog_close事件
-            $(".state-bar").on('click', function () {
+            $(".bottom-bar").on('click', function () {
                  $(".dialog-close").click();
             });
             role = $('.role-list .select').text().split(/[\s\n]/).pop();
