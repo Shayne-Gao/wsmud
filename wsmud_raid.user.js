@@ -3801,6 +3801,7 @@ look men;unlock men
     go south
     select {r庄允城}?
     ask {r庄允城}? about 吴荣之
+    $wait 30000
     @kill 庄允城
 `
         },
