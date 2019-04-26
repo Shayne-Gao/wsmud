@@ -1825,6 +1825,7 @@
                     }
                 });
             }
+            WG.SendCmd("stopstate");
             WG.go("扬州城-衙门正厅");
             await WG.sleep(200);
             WG.update_npc_id();
@@ -6179,7 +6180,7 @@
                             callback: function (key, opt) {
                                 let myDate = new Date();
                                 if (myDate.getHours() >= 17) {
-                                    WG.go("逍遥派-青草坪");
+                                    WG.go("逍遥派-地下石室");
                                 } else {
                                     WG.go("逍遥派-青草坪");
                                 }
@@ -6284,3 +6285,4 @@
         });
     });
 })();
+

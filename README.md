@@ -15,6 +15,11 @@ https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_raid.user.js
 
 
 # 更新记录 
+2019年4月26日 
+- fix读书不显示当前等级的bug
+- 更新全自动天地会和鳌拜府和简单版本温府
+- 追捕开启时候会自动stopstate
+
 2019年4月25日 
 - 增加F绑定确认,Z打坐 X疗伤 的快捷键
 - 武道塔自动纳入副本流程
@@ -35,8 +40,10 @@ https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_raid.user.js
 
 
 # todo：
-增加关闭按钮大小，方便手机
+追捕自动打坐，判断血量,并提示连续
+学习时间计算支持指定最大等级
 角色信息内容太长的问题
+tab显示系统信息和物品获取
 
 
 # 版权说明

@@ -390,11 +390,9 @@
                     // 学习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋学习效率%－先天悟性%）×3
                     let cost = (xtwx + htwx) * (1 +  xxxl / 100 - xtwx / 100) * 3;
                     $(".content-message pre").append(`学习${name}消耗了${parseInt(cost)}点潜能。\n`);
-                    if (funny.data.id === "j9h729c52bc") {
-                        let time = qianneng / cost / 12;
-                        let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
-                        $(".content-message pre").append(`练满时间 => ${timeString} 当前等级:${level}\n`);
-                    }
+                    let time = qianneng / cost / 12;
+                    let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
+                    $(".content-message pre").append(`练满时间 => ${timeString} 当前等级:${level}\n`);
                     fn.scroll(".content-message");
                 }else if (funny.state.startWith("你正在学习")) {
                     // 学习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋学习效率%）×3
@@ -411,7 +409,7 @@
         }
     });
 
-	//用来判断的自实现函数
+    //用来判断的自实现函数
     String.prototype.startWith=function(str){
         var reg=new RegExp("^"+str);
         return reg.test(this);
@@ -612,7 +610,7 @@
                          await fn.sleep(100);
                         // $("[command=pack]").click();
                        //  await fn.sleep(100);
-                       //  $("[command=tasks]").click();
+                         $("[command=tasks]").click();
                          await fn.sleep(500);
                          $(".dialog-close").click();
                      };
@@ -707,11 +705,11 @@
                     $(`<tr></tr>`).append(
                         $(`<td></td>`).append(`技能上限`),
                       //  $(`<td></td>`).append(`${skill.id}`),
-					    $(`<td></td>`).append(`${djsx}`),
+                        $(`<td></td>`).append(`${djsx}`),
                     ),
                 );
             array.forEach(skill => {
-            	let level = parseInt(skill.level);
+                let level = parseInt(skill.level);
                 let name = skill.name;
                 let k=0
                 if (/<wht>.*/.test(name)) k = 1; // 白
@@ -722,13 +720,13 @@
                 if (/<hio>.*/.test(name)) k = 6; // 橙
                 if (/<hir>.*/.test(name)) k = 7; // 红
 
-            	let qianneng = (djsx * djsx - level * level) * 2.5 * k;
+                let qianneng = (djsx * djsx - level * level) * 2.5 * k;
                 $(".left-skill tbody").append(
                     $(`<tr></tr>`).append(
                         $(`<td></td>`).append(`${skill.name}`),
                         $(`<td></td>`).append(`${skill.level}`),
                       //  $(`<td></td>`).append(`${skill.id}`),
-					    $(`<td></td>`).append(`${qianneng}`),
+                        $(`<td></td>`).append(`${qianneng}`),
 
                     ),
                 );
@@ -802,5 +800,8 @@
         GM_addStyle(`.right{height:100%;display:flex;flex-direction:column;}`);
         GM_addStyle(`.msg{height:auto;overflow:auto;flex: 0 0 auto;font-size:14px;line-height:16px;max-height:160px;}`);
         GM_addStyle(`.chat{flex:1 1 auto;max-height:100%;}`);
+        //增加关闭按钮大小
+       //  GM_addStyle(`.glyphicon{width:200px;}`);
     });
 })();
+

@@ -3206,7 +3206,7 @@ stopSSAuto->`
 jh fam 9 start;go enter
 [if] (_DungeonWaitSkillCD) == 打开
     @cd
-$killall
+@kill 武道塔守护者
 `
         },
         {
@@ -3607,6 +3607,39 @@ look zhuang;tiao zhuang
 go north
 @kill 温仪`
         },
+          {
+            name: "温府（简单）",
+            desc: "温府(不杀夏雪宜)",
+            source: `
+
+jh fb 10 start1;cr cd/wen/damen
+look tree;climb tree;go north;
+@kill 温方达
+go northeast
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd
+go east
+@kill 温方南
+go west;go north;
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd
+go east
+@kill 温方施
+go west;go northwest;go southwest
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd
+go west
+@kill 温方山
+go east
+go south
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd
+go west
+@kill 温方义
+go east;go north;go northeast;go north;tiao zhuang;tiao zhuang;go north
+@kill 温仪
+`
+        },
         {
             name: "关外",
             source: `
@@ -3694,6 +3727,38 @@ go north
 @kill 洪安通,张淡月,无根道长`
         },
         {
+            name: "天地会",
+            source: `
+jh fb 7 start1;cr bj/tdh/hct;
+@kill 药铺伙计
+@kill 徐天川
+go west;
+@kill 关安基
+knock;knock;knock;
+knock;knock;knock;
+go down;
+@kill 玄真道长
+go west[5];
+@kill 吴六奇
+go north
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd
+@kill 陈近南
+go north
+go east
+@kill 喇嘛,喇嘛,喇嘛,喇嘛,喇嘛,喇嘛
+$wait 1000
+cha %独臂神尼%
+$wait 1000
+@kill 独臂神尼
+go west;go south;go west[5];go north;go east
+select {r秘籍}?
+get {r秘籍}?
+$wait 500
+select {r残页}?
+get {r残页}?
+`},
+        {
             name: "流氓巷(组队)",
             source: `
 jh fb 2 start3;cr yz/lmw/xiangzi1 2 0
@@ -3736,24 +3801,40 @@ look tai;tui tai;go enter
                 {
             name: "鳌拜",
             source: `
-cr bj/ao/damen
+jh fb 6 start1;cr bj/ao/damen
 @kill 官兵,官兵
 go west
 @kill 吴之荣
-go west
-@kill 女管家,家将,家将
-go west
-@kill 鳌拜
-go east
-unlock men
-go south
-ask %庄允城% about 吴之荣
 go north
-open shu
+@kill 厨师
+go south;go west
+@kill 家将,家将,女管家
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd
+go west
+@kill 满洲第一勇士 鳌拜
+go east;go north
+look shu;open shu
+@tip 发现扉页的($pos)下角被鳌拜写了一个大大的杀字
 look hua
-tright hua
+$wait 500
+[if] (pos) == 左
+  tleft hua
+[if] (pos) == 右
+  $wait 500
+  tright hua
 go north
-get all
+select {r四十二章经g}?
+get {r四十二章经g}?
+go south;go south
+($open) = 没开
+look men;unlock men
+@tip 你用一把钥匙($open)了牢房门|你不会撬锁
+[if] (open) == 打开
+    go south
+    select {r庄允城}?
+    ask {r庄允城}? about 吴之荣
+    @kill 庄允城
 `
         },
         {
@@ -5510,3 +5591,4 @@ look men;open men
         Xiangyang.init();
     });
 })();
+
