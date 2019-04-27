@@ -425,7 +425,7 @@
             funny.pack.eqs = data.eqs || funny.pack.eqs || [];
 
             //这里有手机端的背包不刷新问题，先注释掉
-            if (False && data.name && !/wht/.test(data.name)) {
+            if (false && data.name && !/wht/.test(data.name)) {
                 funny.pack.total = funny.pack.total || {};
                 funny.pack.total[data.name] ?
                 (funny.pack.total[data.name] ++) : (funny.pack.total[data.name] = 1);
