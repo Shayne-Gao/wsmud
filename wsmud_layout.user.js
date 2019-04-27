@@ -2,7 +2,7 @@
 // @name        wsmud_funny
 // @namespace   suqing
 // @version     0.2.4
-// @author      sq
+// @author      sq shayne-gao
 // @match       http://www.wsmud.com/*
 // @match       http://game.wsmud.com/*
 // @homepage    https://greasyfork.org/zh-CN/scripts/380709
@@ -16,6 +16,7 @@
 // @grant       GM_getValue
 // @grant       GM_setClipboard
 // ==/UserScript==
+//2019年4月24日 17:33:52 增加技能tab显示所需要潜能,学习技能时候显示还剩余学习时间和潜能消耗光所需时间
 
 (function() {
     'use strict';
@@ -171,7 +172,7 @@
             funny.data_login += 1;
             $(".content-message pre").append(`${data}\n`);
             if (funny.data_login === 1) {
-                $(".content-message pre").append(`wsmud_funny ${funny.version} 苏轻祝您游戏愉快！\n`);
+                $(".content-message pre").append(`wsmud_funny ${funny.version} 苏轻/墨匿祝您游戏愉快！\n`);
                 getScore();
             }
             async function getScore() {
@@ -373,29 +374,47 @@
                         }
                     }
                 }
+                //技能所需潜能
                 let qianneng = (djsx * djsx - level * level) * 2.5 * k;
+                //人物当前潜能funny
+                let ownQN =  parseInt(funny.role.pot)
                 if (funny.state === "你正在练习技能") {
                     let time = qianneng / (xtwx + htwx) / (1 + lxxl / 100 - xtwx / 100) / 12;
                     let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
                     $(".remove_lx").remove();
                     // 练习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋练习效率%－先天悟性%）
-                    $(".content-message pre").append(`练习${name}消耗了${parseInt(qianneng / time / 12)}点潜能。\n`);
+                    $(".content-message pre").append(`练习${name}消耗了${parseInt(qianneng / time / 12)}点潜能。当前等级:${level}\n`);
                     $(".content-message pre").append(`<span class="remove_lx">角色悟性: ${xtwx}＋${htwx}\n练习效率: ${lxxl}%\n等级上限: ${djsx}级\n需要潜能: ${qianneng}\n需要时间: ${timeString}\n</span>`);
                     fn.scroll(".content-message");
                 } else if (funny.state === "你正在读书") {
                     // 学习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋学习效率%－先天悟性%）×3
                     let cost = (xtwx + htwx) * (1 +  xxxl / 100 - xtwx / 100) * 3;
                     $(".content-message pre").append(`学习${name}消耗了${parseInt(cost)}点潜能。\n`);
-                    if (funny.data.id === "j9h729c52bc") {
+                    let time = qianneng / cost / 12;
+                    let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
+                    $(".content-message pre").append(`练满时间 => ${timeString} 当前等级:${level}\n`);
+                    fn.scroll(".content-message");
+                }else if (funny.state.startWith("你正在学习")) {
+                    // 学习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋学习效率%）×3
+                    let cost = (xtwx + htwx) * (1 +  xxxl / 100 ) * 3;
+                    $(".content-message pre").append(`学习${name}消耗了${parseInt(cost)}点潜能。\n`);
                         let time = qianneng / cost / 12;
+                        let leftTime = ownQN / cost / 12
                         let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
-                        $(".content-message pre").append(`练满时间 => ${timeString}\n`);
-                    }
+                        let leftTimeString = leftTime < 60 ? `${parseInt(leftTime)}分钟` : `${parseInt(leftTime / 60)}小时${parseInt(leftTime % 60)}分钟`;
+                    $(".content-message pre").append(`练满时间 => ${timeString}  潜能耗尽时间 => ${leftTimeString} 当前等级:${level}\n`);
                     fn.scroll(".content-message");
                 }
             }
         }
     });
+
+    //用来判断的自实现函数
+    String.prototype.startWith=function(str){
+        var reg=new RegExp("^"+str);
+        return reg.test(this);
+    }
+
     // pack
     listener.addListener("dialog", function(data) {
         if (data.dialog === "pack") {
@@ -405,9 +424,8 @@
             funny.pack.items = data.items || funny.pack.items || [];
             funny.pack.eqs = data.eqs || funny.pack.eqs || [];
 
-            //这一块会导致手机使用的时候，背包无法更新内容，暂时注释+false
-
-            if ( false && data.name && !/wht/.test(data.name)) {
+            //这里有手机端的背包不刷新问题，先注释掉
+            if (False && data.name && !/wht/.test(data.name)) {
                 funny.pack.total = funny.pack.total || {};
                 funny.pack.total[data.name] ?
                 (funny.pack.total[data.name] ++) : (funny.pack.total[data.name] = 1);
@@ -558,9 +576,9 @@
         $(".container").addClass("box");
         $(".login-content").addClass("box");
         GM_addStyle(`body{width:100%;display:flex;flex-flow:row no-wrap;}`);
-        GM_addStyle(`.box{width:360px;flex: 0 0 auto;}`);
+        GM_addStyle(`.box{width:600px;flex: 0 0 auto;}`);
         GM_addStyle(`.container,.login-content{flex:1 0 auto;}`);
-        GM_addStyle(`.left{order:-1;} .right{order:1;}`);
+        GM_addStyle(`.left{order:-1;width:300px} .right{order:1;}`);
         // 左边
         $(".left").append(
             $(`<div class="left-nav item-commands" style="text-align:center;margin-left:10px;"></div>`).append(
@@ -579,7 +597,25 @@
                     $(".left-pack").show();
                 }),
                 $(`<span>备用</span>`),
-                $(`<span>备用</span>`),
+                $(`<span>刷新数据</span>`).click(function() {
+                     refreshScore();
+                     layoutSkill()
+                     async function refreshScore() {
+                         $("[command=score]").click();
+                         await fn.sleep(100);
+                         $("[for=1]").click();
+                         await fn.sleep(100);
+                         $("[for=0]").click();
+                         await fn.sleep(100);
+                         $("[command=skills]").click();
+                         await fn.sleep(100);
+                        // $("[command=pack]").click();
+                       //  await fn.sleep(100);
+                         $("[command=tasks]").click();
+                         await fn.sleep(500);
+                         $(".dialog-close").click();
+                     };
+                }),
             ),
             $(`<div class="left-role left-hide"></div>`).append(
                 $(`<table></table>`).append(
@@ -614,7 +650,7 @@
                 $(`<table></table>`).append(
                     $(`<thead></thead>`).append(
                         $(`<tr><td colspan="3"><hiy>技能信息</hiy></td></tr>`),
-                        $(`<tr><td>技能</td><td>代码</td><td>等级</td></tr>`),
+                        $(`<tr><td>技能</td><td>等级</td><td>所需潜能</td></tr>`),
                     ),
                     $(`<tbody></tbody>`),
                 ),
@@ -663,12 +699,36 @@
                 }
             }
             $(".left-skill tbody").html(""); // clear
+            //获取相关角色信息
+            let djsx = funny.data_skill_limit; // 上限
+            //书写技能相关的表头
+              $(".left-skill tbody").append(
+                    $(`<tr></tr>`).append(
+                        $(`<td></td>`).append(`技能上限`),
+                      //  $(`<td></td>`).append(`${skill.id}`),
+                        $(`<td></td>`).append(`${djsx}`),
+                    ),
+                );
             array.forEach(skill => {
+                let level = parseInt(skill.level);
+                let name = skill.name;
+                let k=0
+                if (/<wht>.*/.test(name)) k = 1; // 白
+                if (/<hig>.*/.test(name)) k = 2;
+                if (/<hic>.*/.test(name)) k = 3;
+                if (/<hiy>.*/.test(name)) k = 4;
+                if (/<hiz>.*/.test(name)) k = 5;
+                if (/<hio>.*/.test(name)) k = 6; // 橙
+                if (/<hir>.*/.test(name)) k = 7; // 红
+
+                let qianneng = (djsx * djsx - level * level) * 2.5 * k;
                 $(".left-skill tbody").append(
                     $(`<tr></tr>`).append(
                         $(`<td></td>`).append(`${skill.name}`),
-                        $(`<td></td>`).append(`${skill.id}`),
                         $(`<td></td>`).append(`${skill.level}`),
+                      //  $(`<td></td>`).append(`${skill.id}`),
+                        $(`<td></td>`).append(`${qianneng}`),
+
                     ),
                 );
             });
@@ -741,5 +801,7 @@
         GM_addStyle(`.right{height:100%;display:flex;flex-direction:column;}`);
         GM_addStyle(`.msg{height:auto;overflow:auto;flex: 0 0 auto;font-size:14px;line-height:16px;max-height:160px;}`);
         GM_addStyle(`.chat{flex:1 1 auto;max-height:100%;}`);
+        //增加关闭按钮大小
+       //  GM_addStyle(`.glyphicon{width:200px;}`);
     });
 })();
