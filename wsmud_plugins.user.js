@@ -1822,6 +1822,9 @@
                         WG.yamen_lister = undefined;
                     } else if (data.msg.indexOf("没有这个人") >= 0) {
                         WG.update_npc_id();
+                    } else  if (data.msg.indexOf("你的追捕任务完成了") >= 0) {
+                         WG.go("扬州城-武庙");
+                         WG.Send("liaoshang");
                     }
                 });
             }
