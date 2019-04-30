@@ -17,6 +17,9 @@ https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_raid.user.js
 # 马上会更新：
 学习时间计算支持指定最大等级 按照境界指定
 左侧PC的tab显示系统信息和物品获取
+手机不显示学习等级的习信息
+监控，如果发呆，也要看有没有鼓舞buff
+
 
 
 # 更新记录 
@@ -28,6 +31,8 @@ https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_raid.user.js
 - 默认潜能计算到800级,之后支持自定义
 - 修复角色信息内容太长的问题
 - 将一键清理移动到一阶菜单
+- 传送前自动停止当前动作
+- 优化学习时候的辅助信息显示
 
 
 2019年4月26日 
@@ -57,3 +62,4 @@ https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_raid.user.js
 
 # 版权说明
 本插件为基于wsmud_pluginss的私人更改优化版本，原插件版权归原作者所有。严禁商用。
+

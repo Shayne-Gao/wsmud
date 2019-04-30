@@ -1,7 +1,8 @@
 //@author 墨匿
 //学习
 //v430 增加学习结束后的动作,在每次学习开始的时候都检测师傅在不在,如果不在就停止
-
+if (afterLearn) == null
+    afterLearn = 帮派打坐
 #select ($afterLearn) = 学习结束之后干什么?,帮派打坐|练习技能|挖矿,帮派打坐
 <-stopSSAuto
 @toolbar score
@@ -82,7 +83,10 @@
 
 
 stopstate;$to (Loction)
-
+($needStudy) = true
+[if] {r(shifu)}? == null
+    ($needStudy)=false
+    @print 你的师傅不在了...
 <---
 //这里需要优化,如果学习过程中师傅没了怎么办?
 $wait 300
@@ -90,7 +94,6 @@ $wait 300
     ($needStudy)=false
     @print 你的师傅不在了...
 //开始学习
-($needStudy) = true
 
 [if] (needStudy) == true
     $wait 3500
