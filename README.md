@@ -14,7 +14,22 @@ https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_raid.user.js
 
 
 
+# 马上会更新：
+学习时间计算支持指定最大等级 按照境界指定
+左侧PC的tab显示系统信息和物品获取
+
+
 # 更新记录 
+
+2019年4月30日
+节日快乐!
+- 解决手机端背包打开不刷新问题 layout
+- 增加技能潜能计算 技能页面信息展示 layout
+- 默认潜能计算到800级,之后支持自定义
+- 修复角色信息内容太长的问题
+- 将一键清理移动到一阶菜单
+
+
 2019年4月26日 
 - fix读书不显示当前等级的bug
 - 更新全自动天地会和鳌拜府和简单版本温府
@@ -38,12 +53,6 @@ https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_raid.user.js
 - 更改title，网页title更精简方便监控
 
 
-
-# todo：
-追捕自动打坐，判断血量,并提示连续
-学习时间计算支持指定最大等级
-角色信息内容太长的问题
-tab显示系统信息和物品获取
 
 
 # 版权说明
