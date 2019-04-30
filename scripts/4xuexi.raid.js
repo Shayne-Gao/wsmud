@@ -21,6 +21,10 @@
     ($a) = dodge
     ($b) = dodge
     ($c) = dodge
+[if] (shifu) == 静心
+    ($a) = unarmed
+    ($b) = dodge
+    ($c) = parry
 //
 
 [if] (shifu) == 谷虚道长||(shifu) == 宋远桥
@@ -86,6 +90,7 @@ $wait 300
     ($needStudy)=false
     @print 你的师傅不在了...
 //开始学习
+($needStudy) = true
 
 [if] (needStudy) == true
     $wait 3500
