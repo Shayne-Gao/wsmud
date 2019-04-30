@@ -1822,9 +1822,6 @@
                         WG.yamen_lister = undefined;
                     } else if (data.msg.indexOf("没有这个人") >= 0) {
                         WG.update_npc_id();
-                    } else  if (data.msg.indexOf("你的追捕任务完成了") >= 0) {
-                         WG.go("扬州城-武庙");
-                         WG.Send("liaoshang");
                     }
                 });
             }
@@ -5945,12 +5942,6 @@
                                 WG.grove_auto();
                             }
                         },
-                        "自动整理并清包": {
-                            name: "自动整理并清包",
-                            callback: function (key, opt) {
-                                WG.sell_all();
-                            }
-                        },
                         "自动比试": {
                             name: "自动比试",
                             visible: function (key, opt) {
@@ -6054,6 +6045,12 @@
                         WG.zml();
                     },
                 },
+                 "自动整理并清包": {
+                            name: "自动整理并清包",
+                            callback: function (key, opt) {
+                                WG.sell_all();
+                            }
+                        },
                 "手动喜宴": {
                     name: "手动喜宴",
                     callback: function (key, opt) {
@@ -6288,4 +6285,3 @@
         });
     });
 })();
-
