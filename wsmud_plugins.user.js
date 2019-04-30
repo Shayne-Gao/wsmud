@@ -6169,9 +6169,9 @@
                             callback: function (key, opt) {
                                 let myDate = new Date();
                                 if (myDate.getHours() >= 17) {
-                                    WG.go("峨眉派-清修洞");
+                                    WG.go("峨眉派-庙门");
                                 } else {
-                                    WG.go("峨眉派-金顶")
+                                    WG.go("峨眉派-庙门")
                                 }
                             },
                         },
