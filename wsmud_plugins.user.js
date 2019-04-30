@@ -4375,7 +4375,7 @@
                     let title =  "";
                     let state = data.state;
                     let shortState = `${state}`.substring(3,5);
-                    let shortRole = `${role}`.substring(0,1);
+                    let shortRole = `${role}`.substring(-2);
                     if (data.state == null) {
                         state = '空闲'
                     }
