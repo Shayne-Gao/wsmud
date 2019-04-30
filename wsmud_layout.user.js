@@ -331,6 +331,8 @@
     listener.addListener("dialog", function(data) {
         if (data.dialog === "score") {
             for (const key in data) funny.role[key] = data[key];
+            //截断rolename 防止过长
+            funny.role.name=funny.role.name.substring(5,50)
             for (const key in funny.role) $(`.role_${key}`).html(funny.role[key]);
         }
     });
@@ -343,6 +345,7 @@
             funny.skills = data.items || funny.skills || [];
             if (data.items) {
                 funny.data_skill_limit = parseInt(data.limit);
+                funny.role.skill_limit =parseInt(data.limit);
             } else if (data.id && data.exp) {
                 if (data.level) {
                     for (const skill of funny.skills) {
@@ -374,7 +377,8 @@
                         }
                     }
                 }
-                //技能所需潜能
+                //技能所需潜能,现在是800,之后需要加个输入框
+                djsx=800
                 let qianneng = (djsx * djsx - level * level) * 2.5 * k;
                 //人物当前潜能funny
                 let ownQN =  parseInt(funny.role.pot)
@@ -409,7 +413,7 @@
         }
     });
 
-    //用来判断的自实现函数
+	//用来判断的自实现函数
     String.prototype.startWith=function(str){
         var reg=new RegExp("^"+str);
         return reg.test(this);
@@ -424,8 +428,7 @@
             funny.pack.items = data.items || funny.pack.items || [];
             funny.pack.eqs = data.eqs || funny.pack.eqs || [];
 
-            //这里有手机端的背包不刷新问题，先注释掉
-            if (false && data.name && !/wht/.test(data.name)) {
+            if (data.name && !/wht/.test(data.name)) {
                 funny.pack.total = funny.pack.total || {};
                 funny.pack.total[data.name] ?
                 (funny.pack.total[data.name] ++) : (funny.pack.total[data.name] = 1);
@@ -579,7 +582,7 @@
         GM_addStyle(`.box{width:600px;flex: 0 0 auto;}`);
         GM_addStyle(`.container,.login-content{flex:1 0 auto;}`);
         GM_addStyle(`.left{order:-1;width:300px} .right{order:1;}`);
-        // 左边
+
         $(".left").append(
             $(`<div class="left-nav item-commands" style="text-align:center;margin-left:10px;"></div>`).append(
                 $(`<span id="click_role">属性</span>`).click(function() {
@@ -649,8 +652,14 @@
             $(`<div class="left-skill left-hide"></div>`).append(
                 $(`<table></table>`).append(
                     $(`<thead></thead>`).append(
+                         $(`<tr><td>拥有潜能</td><td colspan="3"><hig class="role_pot"></hig></td></tr>`),
+                        $(`<tr><td>技能上限</td><td colspan="3"><hig class="role_skill_limit"></hig></td></tr>`),
+                         $(`<tr><td>练习效率</td><td class="role_lianxi_per"></td><td>学习效率</td><td class="role_study_per"></td></tr>`),
                         $(`<tr><td colspan="3"><hiy>技能信息</hiy></td></tr>`),
-                        $(`<tr><td>技能</td><td>等级</td><td>所需潜能</td></tr>`),
+                        $(`<tr><td>技能</td><td>等级</td><td>练满所需潜能</td></tr>`),
+
+
+
                     ),
                     $(`<tbody></tbody>`),
                 ),
@@ -699,18 +708,9 @@
                 }
             }
             $(".left-skill tbody").html(""); // clear
-            //获取相关角色信息
-            let djsx = funny.data_skill_limit; // 上限
-            //书写技能相关的表头
-              $(".left-skill tbody").append(
-                    $(`<tr></tr>`).append(
-                        $(`<td></td>`).append(`技能上限`),
-                      //  $(`<td></td>`).append(`${skill.id}`),
-                        $(`<td></td>`).append(`${djsx}`),
-                    ),
-                );
+
             array.forEach(skill => {
-                let level = parseInt(skill.level);
+            	let level = parseInt(skill.level);
                 let name = skill.name;
                 let k=0
                 if (/<wht>.*/.test(name)) k = 1; // 白
@@ -721,13 +721,13 @@
                 if (/<hio>.*/.test(name)) k = 6; // 橙
                 if (/<hir>.*/.test(name)) k = 7; // 红
 
-                let qianneng = (djsx * djsx - level * level) * 2.5 * k;
+            	let qianneng = (800 * 800 - level * level) * 2.5 * k;
                 $(".left-skill tbody").append(
                     $(`<tr></tr>`).append(
                         $(`<td></td>`).append(`${skill.name}`),
                         $(`<td></td>`).append(`${skill.level}`),
                       //  $(`<td></td>`).append(`${skill.id}`),
-                        $(`<td></td>`).append(`${qianneng}`),
+					    $(`<td></td>`).append(`<hiy>${qianneng}</hiy>`),
 
                     ),
                 );
