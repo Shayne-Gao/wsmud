@@ -28,6 +28,7 @@ https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_raid.user.js
 - 增加一键传送师傅功能 右键执行
 - 潜能计算根据当前境界来 武师800最大  宗师按照自己的技能上线计算
 - 其他界面和小功能优化
+
 2019年4月30日
 节日快乐!
 - 解决手机端背包打开不刷新问题 layout
