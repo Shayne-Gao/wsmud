@@ -1517,6 +1517,7 @@
             }
             if (place[p] != undefined) {
                 G.ingo = true;
+                WG.SendCmd("stopstate");
                 await WG.SendCmd(place[p]);
                 G.ingo = false;
             }
@@ -6169,9 +6170,9 @@
                             callback: function (key, opt) {
                                 let myDate = new Date();
                                 if (myDate.getHours() >= 17) {
-                                    WG.go("峨眉派-庙门");
+                                    WG.go("峨眉派-小屋");
                                 } else {
-                                    WG.go("峨眉派-庙门")
+                                    WG.go("峨眉派-小屋")
                                 }
                             },
                         },
@@ -6206,7 +6207,7 @@
                         "mp7": {
                             name: "杀手楼",
                             callback: function (key, opt) {
-                                WG.go("杀手楼-银楼");
+                                WG.go("杀手楼-书房");
                             },
                         }
                     },
