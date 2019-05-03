@@ -573,7 +573,7 @@
         }
         // 样式优化
         $(".signinfo").addClass("hide");
-        GM_addStyle(`.room_desc{overflow:hidden;white-space:nowrap;}`);
+        GM_addStyle(`.room_desc{overflow:hidden;}`);
         GM_addStyle(`.channel{display:none;}`);
         GM_addStyle(`.content-bottom{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}`);
         GM_addStyle(`.room-item>.item-name{margin-left:14px;}`);
