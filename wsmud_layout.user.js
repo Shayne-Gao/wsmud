@@ -332,7 +332,7 @@
         if (data.dialog === "score") {
             for (const key in data) funny.role[key] = data[key];
             //截断rolename 防止过长
-            funny.role.name=funny.role.name.substring(5,50)
+            funny.role.name=funny.role.name.substr(-40,40)
             for (const key in funny.role) $(`.role_${key}`).html(funny.role[key]);
         }
     });
@@ -378,7 +378,12 @@
                     }
                 }
                 //技能所需潜能,现在是800,之后需要加个输入框
-                djsx=800
+                if (funny.role.level == "<hig>武师</hig>"){
+                    djsx=800
+                }else if  (funny.role.level == "<wht>武士</wht>"){
+                    djsx=300
+                }
+                
                 let qianneng = (djsx * djsx - level * level) * 2.5 * k;
                 //人物当前潜能funny
                 let ownQN =  parseInt(funny.role.pot)
@@ -387,13 +392,13 @@
                     let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
                     $(".remove_lx").remove();
                     // 练习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋练习效率%－先天悟性%）
-                    $(".content-message pre").append(`练习${name}消耗了${parseInt(qianneng / time / 12)}点潜能。当前等级:${level}\n`);
+                    $(".content-message pre").append(`练习${name}消耗了${parseInt(qianneng / time / 12)}点潜能。\n当前等级:${level}/${djsx}）\n`);
                     $(".content-message pre").append(`<span class="remove_lx">角色悟性: ${xtwx}＋${htwx}\n练习效率: ${lxxl}%\n等级上限: ${djsx}级\n需要潜能: ${qianneng}\n需要时间: ${timeString}\n</span>`);
                     fn.scroll(".content-message");
                 } else if (funny.state === "你正在读书") {
                     // 学习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋学习效率%－先天悟性%）×3
                     let cost = (xtwx + htwx) * (1 +  xxxl / 100 - xtwx / 100) * 3;
-                    $(".content-message pre").append(`学习${name}消耗了${parseInt(cost)}点潜能。\n`);
+                //    $(".content-message pre").append(`学习${name}消耗了${parseInt(cost)}点潜能。\n`);
                     let time = qianneng / cost / 12;
                     let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
                     $(".content-message pre").append(`练满时间 => ${timeString} 当前等级:${level}\n`);
@@ -406,14 +411,17 @@
                         let leftTime = ownQN / cost / 12
                         let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
                         let leftTimeString = leftTime < 60 ? `${parseInt(leftTime)}分钟` : `${parseInt(leftTime / 60)}小时${parseInt(leftTime % 60)}分钟`;
-                    $(".content-message pre").append(`练满时间 => ${timeString}  潜能耗尽时间 => ${leftTimeString} 当前等级:${level}\n`);
+                    $(".remove_lx").remove();
+                    $(".content-message pre").append(`当前等级:${level}/${djsx}\n`);
+                    $(".content-message pre").append(`<span class="remove_lx">角色悟性: ${xtwx}＋${htwx}\n学习效率: ${xxxl}%\n等级上限: ${djsx}级\n需要潜能: ${qianneng}\n需要时间: ${timeString}\n潜能耗尽时间 => ${leftTimeString}\n</span>`);
+
                     fn.scroll(".content-message");
                 }
             }
         }
     });
 
-	//用来判断的自实现函数
+    //用来判断的自实现函数
     String.prototype.startWith=function(str){
         var reg=new RegExp("^"+str);
         return reg.test(this);
@@ -710,7 +718,7 @@
             $(".left-skill tbody").html(""); // clear
 
             array.forEach(skill => {
-            	let level = parseInt(skill.level);
+                let level = parseInt(skill.level);
                 let name = skill.name;
                 let k=0
                 if (/<wht>.*/.test(name)) k = 1; // 白
@@ -721,13 +729,13 @@
                 if (/<hio>.*/.test(name)) k = 6; // 橙
                 if (/<hir>.*/.test(name)) k = 7; // 红
 
-            	let qianneng = (800 * 800 - level * level) * 2.5 * k;
+                let qianneng = parseInt( (800 * 800 - level * level) * 2.5 * k);
                 $(".left-skill tbody").append(
                     $(`<tr></tr>`).append(
                         $(`<td></td>`).append(`${skill.name}`),
                         $(`<td></td>`).append(`${skill.level}`),
                       //  $(`<td></td>`).append(`${skill.id}`),
-					    $(`<td></td>`).append(`<hiy>${qianneng}</hiy>`),
+                        $(`<td></td>`).append(`<hiy>${qianneng}</hiy>`),
 
                     ),
                 );
@@ -805,3 +813,4 @@
        //  GM_addStyle(`.glyphicon{width:200px;}`);
     });
 })();
+
