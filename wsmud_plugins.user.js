@@ -570,6 +570,35 @@
         "逍遥派": "jh fam 5 start;go west;go east;go down",
         "丐帮": "jh fam 6 start;go down;go east;go east;go east;go east;go east",
     };
+    var master_place={
+        "谷虚道长": "武当派-三清殿",
+        "宋远桥": "武当派-三清殿",
+        "张三丰": "武当派-后山小院",
+        "清乐比丘": "少林派-广场",
+        "道绝禅师": "少林派-天王殿",
+        "慧合尊者": "少林派-般若堂",
+        "澄净": "少林派-罗汉堂",
+        "玄难": "少林派-方丈楼",
+        "高根明": "华山派-镇岳宫",
+        "岳不群": "华山派-客厅",
+        "封不平": "华山派-林间小屋",
+        "风清扬": "华山派-落雁峰",
+        "苏梦清": "峨眉派-庙门",
+        "静心": "峨眉派-大殿",
+        "周芷若": "峨眉派-小屋",
+        "灭绝": "峨眉派-清修洞",
+        "薛慕华": "逍遥派-木屋",
+        "苏星河": "逍遥派-青草坪",
+        "逍遥子": "逍遥派-地下石室",
+        "左全": "丐帮-树洞下",
+        "简长老": "丐帮-土地庙",
+        "鲁有脚": "丐帮-林间小屋",
+        "洪七公": "丐帮-林间小屋",
+        "何小二": "杀手楼-大厅",
+        "李四": "杀手楼-银楼",
+        "雾中楼": "杀手楼-书房",
+        "武馆教习": "扬州城-扬州武馆"
+    };
     var fb_path = [];
     var drop_list = [];
     var fenjie_list = [];
@@ -3720,6 +3749,12 @@
             // await WG.sleep(1000);
 
         },
+        oneKeyToMaster: function (){
+           var master = funny.role.master;
+            WG.SendCmd("stopstate");
+            WG.go(master_place[master]);
+
+        },
         oneKeyQA: async function () {
             WG.Send("stopstate");
             WG.sm_state = 0;
@@ -6057,6 +6092,13 @@
                     callback: function (key, opt) {
                         console.log("当前自动状态:" + stopauto);
                         WG.xiyan();
+                    },
+                },
+                "传送师傅": {
+                    name: "传送师傅",
+                    callback: function (key, opt) {
+                        console.log("当前自动状态:" + stopauto);
+                        WG.oneKeyToMaster();
                     },
                 },
                 "快捷传送": {
