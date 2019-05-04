@@ -2,7 +2,7 @@
 // @name        wsmud_funny
 // @namespace   suqing
 // @version     0.2.4
-// @author      sq shayne-gao
+// @author      sq 墨匿
 // @match       http://www.wsmud.com/*
 // @match       http://game.wsmud.com/*
 // @homepage    https://greasyfork.org/zh-CN/scripts/380709
@@ -421,7 +421,7 @@
         }
     });
 
-    //用来判断的自实现函数
+	//用来判断的自实现函数
     String.prototype.startWith=function(str){
         var reg=new RegExp("^"+str);
         return reg.test(this);
@@ -718,7 +718,7 @@
             $(".left-skill tbody").html(""); // clear
 
             array.forEach(skill => {
-                let level = parseInt(skill.level);
+            	let level = parseInt(skill.level);
                 let name = skill.name;
                 let k=0
                 if (/<wht>.*/.test(name)) k = 1; // 白
@@ -729,13 +729,13 @@
                 if (/<hio>.*/.test(name)) k = 6; // 橙
                 if (/<hir>.*/.test(name)) k = 7; // 红
 
-                let qianneng = parseInt( (800 * 800 - level * level) * 2.5 * k);
+            	let qianneng = parseInt( (800 * 800 - level * level) * 2.5 * k);
                 $(".left-skill tbody").append(
                     $(`<tr></tr>`).append(
                         $(`<td></td>`).append(`${skill.name}`),
                         $(`<td></td>`).append(`${skill.level}`),
                       //  $(`<td></td>`).append(`${skill.id}`),
-                        $(`<td></td>`).append(`<hiy>${qianneng}</hiy>`),
+					    $(`<td></td>`).append(`<hiy>${qianneng}</hiy>`),
 
                     ),
                 );
@@ -813,4 +813,3 @@
        //  GM_addStyle(`.glyphicon{width:200px;}`);
     });
 })();
-
