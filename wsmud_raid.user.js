@@ -3191,7 +3191,7 @@ ${SourceCodeHelper.appendHeader("    ", source)}
     @cleanBag
 [else if] (_DungeonBagCleanWay) == 存仓及售卖
     @tidyBag
-$to 住房-练功房;dazuo
+$zdwk
 recordGains->
 stopSSAuto->`
         return result;
