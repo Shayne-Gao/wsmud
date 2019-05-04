@@ -6,7 +6,7 @@
 // @modified     20/04/2019
 // @homepage     https://greasyfork.org/zh-CN/scripts/371372
 // @description  武神传说 MUD
-// @author       fjcqv(源程序) & zhzhwcn(提供websocket监听)& knva(做了一些微小的贡献) &Bob.cn(raid.js作者)
+// @author       fjcqv(源程序) & zhzhwcn(提供websocket监听)& knva(做了一些微小的贡献) &Bob.cn(raid.js作者) &墨匿(提供优化和后续新功能)
 // @match        http://*.wsmud.com/*
 // @run-at       document-start
 // @require      https://cdn.staticfile.org/jquery/3.3.1/jquery.js
@@ -21,7 +21,7 @@
 
 (function () {
     'use strict';
-    var updateinfo = "🍋欢迎体验简单工具 \n 新增自定义按钮功能,启动请使用右键,切换菜单;设置请进入设置中设置\nQQ群 367657589 付费群 \n有问题请反馈\n支付宝搜索 9214712 领花呗红包\n";
+    var updateinfo = "🍋欢迎体验简单工具 \n 新增自定义按钮功能,启动请使用右键,切换菜单;设置请进入设置中设置\nQQ群 367657589 付费群 \n有问题请反馈\n";
 
     Array.prototype.baoremove = function (dx) {
         if (isNaN(dx) || dx > this.length) {
