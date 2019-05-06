@@ -377,10 +377,13 @@
                         }
                     }
                 }
+
                 //技能所需潜能,现在是800,之后需要加个输入框
-                if (funny.role.level == "<hig>武师</hig>"){
+                if (funny.role.level == "<hig>武师</hig>" && level < 500){
+                    djsx=500
+                }else  if (funny.role.level == "<hig>武师</hig>" && level < 800){
                     djsx=800
-                }else if  (funny.role.level == "<wht>武士</wht>"){
+                }else if  (funny.role.level == "<wht>武士</wht>" && level < 300){
                     djsx=300
                 }
                 
@@ -591,6 +594,20 @@
         GM_addStyle(`.container,.login-content{flex:1 0 auto;}`);
         GM_addStyle(`.left{order:-1;width:300px} .right{order:1;}`);
 
+        $("#login_panel ul").append(
+                            $(`<li class="panel_item">一键登录</li>`).click(function() {
+                    setTimeout(function(){ $("[command='LoginIn']").click()}, 100);
+                    setTimeout(function(){ $("[command='SelectServer']").click()},1200);
+                    setTimeout(function(){ $("[command='SelectRole']").click()}, 1500);
+
+                }),
+        )
+        $("#role_panel ul").append(
+                            $(`<li class="panel_item">返回用户名密码窗口</li>`).click(function() {
+                    setTimeout(function(){ $("[command='ToServerPanel']").click()}, 200);
+                    setTimeout(function(){ $("[command='ReLogin']").click()},1200);
+                }),
+        )
         $(".left").append(
             $(`<div class="left-nav item-commands" style="text-align:center;margin-left:10px;"></div>`).append(
                 $(`<span id="click_role">属性</span>`).click(function() {
@@ -603,11 +620,10 @@
                     $(".left-skill").show();
                 }),
                 $(`<span>背包</span>`).click(function() {
-                    // layoutPack();
+                     layoutPack();
                     $(".left-hide").hide();
                     $(".left-pack").show();
                 }),
-                $(`<span>备用</span>`),
                 $(`<span>刷新数据</span>`).click(function() {
                      refreshScore();
                      layoutSkill()
