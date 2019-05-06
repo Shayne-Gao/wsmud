@@ -3160,6 +3160,7 @@
 #select ($_DungeonWaitSkillCD) = Boss战前等待技能冷却,打开|关闭,(_DungeonWaitSkillCD)
 #select ($_DungeonBagCleanWay) = 背包清理方案,不清理|售卖|存仓及售卖,(_DungeonBagCleanWay)
 #input ($_repeat) = 重复次数,1
+#select ($_equipSet) = 更换套装?0为不换装,0|1|2|3,1
 #config
 [if] (arg0) != null
     ($_DungeonHpThreshold) = (arg0)
@@ -3171,6 +3172,7 @@
     ($_repeat) = (arg3)
 <-stopSSAuto
 stopstate
+$eq (_equipSet)
 <---
 ($hpPer) = (_DungeonHpThreshold)/100
 [if] (:hpPer) < (hpPer)
