@@ -706,6 +706,22 @@
             $("span[command=setting] span:eq(0)").html(",");
 
             $(document).on("keydown", this.e);
+
+             //delete 登出
+            this.add(46, function () {
+                setTimeout(function(){ $("[command='ToServerPanel']").click()}, 200);
+                setTimeout(function(){ $("[command='ReLogin']").click()},1200);
+
+            });
+
+            //insert 登录
+            this.add(45 , function () {
+                setTimeout(function(){ $("[command='LoginIn']").click()}, 100);
+                setTimeout(function(){ $("[command='SelectServer']").click()},1200);
+                setTimeout(function(){ $("[command='SelectRole']").click()}, 1500);
+
+            })
+
             this.add(27, function () {
                 KEY.dialog_close();
             });
@@ -1147,6 +1163,8 @@
             "sx": "金牌杀手"
         },
     };
+
+
     var WG = {
         sm_state: -1,
         sm_item: null,
@@ -1175,6 +1193,7 @@
             $(".bottom-bar").on('click', function () {
                  $(".dialog-close").click();
             });
+
             role = $('.role-list .select').text().split(/[\s\n]/).pop();
             $(".bottom-bar").append("<span class='item-commands' style='display:none'><span WG='WG' cmd=''></span></span>"); //命令行模块
             var html = UI.wgui();
@@ -3753,6 +3772,7 @@
            var master = funny.role.master;
             WG.SendCmd("stopstate");
             WG.go(master_place[master]);
+            WG.SendCmd("select $findPlayerByName(\"" + master + "\");$wait 200;cha $findPlayerByName(\"" + master + "\")");
 
         },
         oneKeyQA: async function () {
@@ -6094,7 +6114,7 @@
                         WG.xiyan();
                     },
                 },
-                "传送师傅": {
+                "传送师傅并学习": {
                     name: "传送师傅",
                     callback: function (key, opt) {
                         console.log("当前自动状态:" + stopauto);
@@ -6107,7 +6127,7 @@
                         "mp0": {
                             name: "豪宅",
                             callback: function (key, opt) {
-                                WG.go("住房-小花园");
+                                WG.go("住房-练功房");
                             },
                         },
                         "mp11": {
