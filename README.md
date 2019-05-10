@@ -23,6 +23,11 @@ https://github.com/Shayne-Gao/wsmud/raw/master/wsmud_raid.user.js
 
 
 # 更新记录 
+2019年5月10日
+- 新增若干流程脚本
+- 修复老流程脚本的bug
+- 更改谣言显示位置
+
 2019年5月6日
 - 增加一键返回用户名密码窗口按钮 快捷键del
 - 增加一键登录按钮, 会使用上次登录的大区和角色登录 快捷键 insert
