@@ -1,19 +1,20 @@
+
 // raid.flow
 // auto_zhuibu v2.2
 <-stopSSAuto
 <-recordGains
 [if] (ZBWaitCD) == null
-   ($ZBWaitCD) = 15
+   ($ZBWaitCD) = 17
 [if] (ZBMax) == null
    ($ZBMax) = 52
 [if] (ZBcdskill) == null
-   ($ZBcdskill) = ^none
+   ($ZBcdskill) = ^force.xi
 [if](AZB_action) == null
    ($AZB_action) = $zdwk
 #input ($ZBWaitCD) = 从此次追捕开始，等待技能冷却,(ZBWaitCD)
 #input ($ZBcdskill) = 需要cd的技能使用英文逗号隔开或^不需要cd的技能,(ZBcdskill)
 #input ($ZBMax) = 最高连续追捕数达到后自动放弃,(ZBMax)
-#select ($DieToReset) = 死亡自动重置,已开启|已关闭,已关闭
+#select ($DieToReset) = 死亡自动重置,已开启|已关闭,已开启
 #input ($AZB_action) = 追捕完行为,(AZB_action)
 
 #config
@@ -25,27 +26,31 @@ $eq 1
 @toolbar tasks
 @task 追杀逃犯：目前完成($currentN)/20个，共连续完成($comboN)个|追杀逃犯：($empty)目前完成($currentN)/20个，共连续完成($comboN)个
 
+($maxChainCount) = 0
 [while](currentN) < 20
-   @print 目前完成(currentN)/20个，共连续完成(comboN)个
+   @print <hiy>目前完成(currentN)/20个，共连续完成(comboN)个</hiy>
    @renew
    @until (:status xuruo) == false
    $eq 1
    [if](comboN)>=(ZBMax)
       $to 扬州城-衙门正厅
+      $wait 1000
       ask1 {程药发}
       ask2 {程药发}
       ($comboN) = 0
    [if](comboN)>=(ZBWaitCD)
       @cd (ZBcdskill)
 
+   $wait 1000
    $to 扬州城-衙门正厅
+   $wait 1000
    ($olddir1) = (dir1)
    ($olddir2) = (dir2)
    @print (olddir1)
    ($escapee) = null
    
    [while] (escapee) == null
-      ask1 {程药发}
+          ask1 {程药发}
       @toolbar tasks
       @task 追杀逃犯：($escapee)，据说最近在($dir1)-($dir2)出现过，你还有($time)去寻找他，目前完成($currentN)/20个，共连续完成($comboN)个。|追杀逃犯：目前完成($currentN)/20个，共连续完成($comboN)个
 
@@ -53,24 +58,25 @@ $eq 1
        ($start_h) = (:hour)
        ($start_m) = (:minute)
 
-   $wait 500
-   ($maxChainCount) = 0
+   $wait 1000
+
    [while] {(escapee)}? == null
           <---
              @cmdDelay 1000
              [if] {(escapee)}? != null
                  ($type1) = null
                  kill {(escapee)}
-
+                 @print <hiy>目前完成(currentN)/20个，共连续完成(comboN)个</hiy>
                  @until {(escapee)的尸体}? != null | {r(escapee)}? == null | (:combating) == false
                  @tip 你的追捕任务完成了，目前完成($currentN)/20个，已连续完成($comboN)个。|你($type1)死了($type2)|你要攻击谁
                  relive
                  [if] (comboN) > (maxChainCount)
-                    ($maxChainCount) =  (currentN) 
+                    ($maxChainCount) =  (comboN) 
                  [if](type1)!= null
                     relive
                     [if](DieToReset) == 已开启
                        $to 扬州城-衙门正厅
+                       $wait 1000
                        ask2 {程药发}
                  [break]
              [if] (DieToReset) == 已关闭
@@ -209,5 +215,5 @@ stopSSAuto->
 @print 追捕完成，最大连续值 (maxChainCount) 
 //追捕后复原
 @cmdDelay 1000
-@cd
+
 (AZB_action)

@@ -1,8 +1,7 @@
 
 //自动武道塔
 // raid.flow
-<-stopSSAuto
-<-recordGains
+
 [if] (WudaoWaitCDLevel) == null
     ($WudaoWaitCDLevel) = 15
 [if] (Wudaoliaoshang) == null
@@ -54,7 +53,8 @@
     ($WudaoManualMaxLevel) = (arg1)
 [if] (arg2) != null
     ($WudaoWaitCDExp) = (arg2)
-
+<-stopSSAuto
+<-recordGains
 stopstate
 $eq 1
 [if] (:hpPer) < (HpPer) || (:mpPer) < (MpPer)
@@ -87,13 +87,13 @@ go enter
 ($wdFailLevel) = 1
 [while] true
     //jh fam 9 start
-    @print 目前楼层 (:room) ,第(wdFailLevel)次尝试，最大楼层(maxWDFailLevel)
+    @print "<hiy>目前楼层 (:room) ,第(wdFailLevel)次尝试，最大楼层(maxWDFailLevel) </hiy>"
     [if] (maxWDFailLevel) == (:room)
         ($wdFailLevel) = (wdFailLevel)+1
     [else]
         ($wdFailLevel) = 1
     ($maxWDFailLevel) = (:room)
-    [if] (wdFailLevel) >= 3
+    [if] (wdFailLevel) > 2
         @print 目前楼层:(:room),第(wdFailLevel)次重试,超过最大尝试次数,退出
         [break]
     [if] (level) >= (WudaoManualMaxLevel)

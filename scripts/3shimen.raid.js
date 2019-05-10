@@ -1,4 +1,3 @@
-
 //自动师门  买药吃药 检查当铺
 // raid.flow
 #select ($needQingan) = 是否自动请安(建议副本完成后请安),是|否,否
@@ -8,29 +7,6 @@
 stopstate
 $sm
 @tip 辛苦了， 你先去休息一下吧
-
-//买药吃药流程
-$to 扬州城-药铺
-select {r平一指}
-list {r平一指}
-@dialog
-($count) = {b养精丹g#}?
-[if] (count) == null
-    ($count) = 10
-[else]
-    ($count) = 10 - (count)
-buy (count) {d养精丹g} from {r平一指}
-use {b养精丹g}[10]
-[if] (eatBluePill) == 是
-    use {b养精丹b}[7]
-[if] {b培元丹}? != null
-    @cmdDelay 300
-    use {b培元丹}[10]
-[if] {b朱果}? != null
-    @cmdDelay 300
-    use {b朱果}[{b朱果#}]
-
-
 
 [if] (needQingan) == 是
     @toolbar score
@@ -67,9 +43,37 @@ use {b养精丹g}[10]
     select {r(senior)};ask2 {r(senior)}
     @tip 恭恭敬敬的一鞠躬|每天请一次安就可以|凑什么热闹
 
+
+//买药吃药流程
+($count) = {b养精丹g#}?
+[if] (count) < 10 || (count) == null
+    $wait 500
+    $to 扬州城-药铺
+    $wait 500
+    select {r平一指}
+    list {r平一指}
+    @dialog
+    [if] (count) == null
+        ($count) = 10
+    [else]
+        ($count) = 10 - (count)
+    buy (count) {d养精丹g} from {r平一指}
+    $wait 500
+ 
+[if] (eatBluePill) == 是
+    use {b养精丹b}[7]
+[if] {b培元丹}? != null
+    $wait 500
+    use {b培元丹}[10]
+[if] {b朱果}? != null
+    $wait 300
+    use {b朱果}[{b朱果#}]
+
+
 $wait 1000
 //检查当铺+卖东西
 $to 扬州城-当铺
+$wait 500
 select {r唐楠}
 list {r唐楠}
 [if]  {b聚气丹g}? == null
@@ -77,7 +81,14 @@ list {r唐楠}
 [else]   
     sell {b聚气丹g#} {b聚气丹g} to {r唐楠}
     @wait 500
-    sell {b聚气丹b#} {b聚气丹b} to {r唐楠}
+    [if] {b聚气丹b}? != null
+        sell {b聚气丹b#} {b聚气丹b} to {r唐楠}
 
+$wait 1000
+[if] {b养精丹g} != null
+    use {b养精丹g}[5]
+    $wait 500
+    use {b养精丹g}[6]
 
-@print 执行完成，下面请执行副本
+dazuo
+@print 执行完成
