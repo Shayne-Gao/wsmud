@@ -25,6 +25,7 @@
         data: {},
         role: {},
         data_skill_limit: 0,
+        next_stage_skill_limit:0,
         data_login: 0,
         data_id: "12345678910",
         data_jy: 0,
@@ -356,7 +357,7 @@
                     }
                 }
                 let name = "", k = 0, level = 0;
-                let djsx = funny.data_skill_limit; // 上限
+              
                 let xxxl = parseInt(funny.role.study_per);   // 学习效率
                 let lxxl = parseInt(funny.role.lianxi_per);  // 练习效率
                 let xtwx = parseInt(funny.role.int);         // 先天悟性
@@ -378,14 +379,30 @@
                     }
                 }
 
+                 let djsx = funny.data_skill_limit; // 上限
+                 if (funny.state === "你正在练习技能") {
                 //技能所需潜能,现在是800,之后需要加个输入框
-                if (funny.role.level == "<hig>武师</hig>" && level < 500){
-                    djsx=500
-                }else  if (funny.role.level == "<hig>武师</hig>" && level < 800){
-                    djsx=800
-                }else if  (funny.role.level == "<wht>武士</wht>" && level < 300){
-                    djsx=300
+                      if (funny.role.level == "<hig>武师</hig>" && level < 500){
+                          djsx=500
+                      }else  if (funny.role.level == "<hig>武师</hig>" && level < 800){
+                          djsx=800
+                      }else if  (funny.role.level == "<wht>武士</wht>" && level < 300){
+                          djsx=300
+                      }else{
+                          djsx = funny.data_skill_limit
+                      }
+                } else if (funny.state === "你正在读书") {
+                    djsx=100
+                } else if (funny.state.startWith("你正在学习")) {
+                      if (funny.role.level == "<hig>武师</hig>" && level < 500){
+                          djsx=500
+                      }else if  (funny.role.level == "<wht>武士</wht>" && level < 300){
+                          djsx=300
+                      }else{
+                          djsx=800
+                      }
                 }
+                funny.next_stage_skill_limit = djsx;
                 
                 let qianneng = (djsx * djsx - level * level) * 2.5 * k;
                 //人物当前潜能funny
@@ -593,7 +610,6 @@
         GM_addStyle(`.box{width:600px;flex: 0 0 auto;}`);
         GM_addStyle(`.container,.login-content{flex:1 0 auto;}`);
         GM_addStyle(`.left{order:-1;width:300px} .right{order:1;}`);
-
         $("#login_panel ul").append(
                             $(`<li class="panel_item">一键登录</li>`).click(function() {
                     setTimeout(function(){ $("[command='LoginIn']").click()}, 100);
@@ -703,6 +719,8 @@
                     $("#send_value").val("");
                 }),
             ),
+           $(`<div class="msg sys rumor"></div>`),
+
         );
 
 
@@ -788,7 +806,7 @@
             $(`<div class="msg fam"></div>`),
             $(`<div class="msg pty"></div>`),
             $(`<div class="msg es"></div>`),
-            $(`<div class="msg sys rumor"></div>`),
+           
             $(`<div class="msg pickup channel-pack"></div>`),
             $(`<div class="msg item-commands"></div>`).append(
                 $(`<span>切</span>`).click(function() {
