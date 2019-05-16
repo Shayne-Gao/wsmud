@@ -3530,6 +3530,8 @@ go north;go north
 go south[3];go west[2]
 @kill 曲洋,曲非烟
 go east[4];go southeast;go south;go east;go south
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd
 @kill 莫大`
         },
         {
@@ -3594,10 +3596,10 @@ look tree;climb tree;go north;go northeast
     [else]
         [break]
 go north[2];go northwest;go north
-look zhuang;tiao zhuang
-@kill 温方义,温方山,温方施,温方南
+look zhuang;tiao zhuang;perform dodge.power
 [if] {r温家老大 温方达%}? != null
     @kill 温方达
+@kill 温方义,温方山,温方施,温方南
 @wait 2000
 [if] (_DungeonWaitSkillCD) == 打开
     @cd
