@@ -335,6 +335,7 @@
             //截断rolename 防止过长
             funny.role.name=funny.role.name.substr(-40,40)
             for (const key in funny.role) $(`.role_${key}`).html(funny.role[key]);
+            funny.next_stage_skill_limit = 100
         }
     });
     // skills
@@ -408,12 +409,15 @@
                 //人物当前潜能funny
                 let ownQN =  parseInt(funny.role.pot)
                 if (funny.state === "你正在练习技能") {
-                    let time = qianneng / (xtwx + htwx) / (1 + lxxl / 100 - xtwx / 100) / 12;
+                    let cost =  (xtwx + htwx) * (1 + lxxl / 100 - xtwx / 100);
+                    let time = qianneng /cost/12
                     let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
+                    let leftTime = ownQN / cost / 12
+                    let leftTimeString = leftTime < 60 ? `${parseInt(leftTime)}分钟` : `${parseInt(leftTime / 60)}小时${parseInt(leftTime % 60)}分钟`;
                     $(".remove_lx").remove();
                     // 练习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋练习效率%－先天悟性%）
-                    $(".content-message pre").append(`练习${name}消耗了${parseInt(qianneng / time / 12)}点潜能。\n当前等级:${level}/${djsx}）\n`);
-                    $(".content-message pre").append(`<span class="remove_lx">角色悟性: ${xtwx}＋${htwx}\n练习效率: ${lxxl}%\n等级上限: ${djsx}级\n需要潜能: ${qianneng}\n需要时间: ${timeString}\n</span>`);
+                    $(".content-message pre").append(`练习${name}消耗了${parseInt(cost)}点潜能。\n当前等级:${level}/${djsx}）\n`);
+                    $(".content-message pre").append(`<span class="remove_lx">角色悟性: ${xtwx}＋${htwx}( ${lxxl}%)\n等级上限: ${djsx}级\n需要潜能: ${qianneng}\n需要时间: ${timeString}\n潜能耗尽时间 => ${leftTimeString}\n</span>`);
                     fn.scroll(".content-message");
                 } else if (funny.state === "你正在读书") {
                     // 学习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋学习效率%－先天悟性%）×3
@@ -426,11 +430,11 @@
                 }else if (funny.state.startWith("你正在学习")) {
                     // 学习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋学习效率%）×3
                     let cost = (xtwx + htwx) * (1 +  xxxl / 100 ) * 3;
+                    let leftTime = ownQN / cost / 12
+                    let leftTimeString = leftTime < 60 ? `${parseInt(leftTime)}分钟` : `${parseInt(leftTime / 60)}小时${parseInt(leftTime % 60)}分钟`;
                     $(".content-message pre").append(`学习${name}消耗了${parseInt(cost)}点潜能。\n`);
-                        let time = qianneng / cost / 12;
-                        let leftTime = ownQN / cost / 12
-                        let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;
-                        let leftTimeString = leftTime < 60 ? `${parseInt(leftTime)}分钟` : `${parseInt(leftTime / 60)}小时${parseInt(leftTime % 60)}分钟`;
+                        let time = qianneng / cost / 12;                      
+                        let timeString = time < 60 ? `${parseInt(time)}分钟` : `${parseInt(time / 60)}小时${parseInt(time % 60)}分钟`;       
                     $(".remove_lx").remove();
                     $(".content-message pre").append(`当前等级:${level}/${djsx}\n`);
                     $(".content-message pre").append(`<span class="remove_lx">角色悟性: ${xtwx}＋${htwx}\n学习效率: ${xxxl}%\n等级上限: ${djsx}级\n需要潜能: ${qianneng}\n需要时间: ${timeString}\n潜能耗尽时间 => ${leftTimeString}\n</span>`);
