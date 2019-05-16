@@ -610,6 +610,8 @@
     var role;
     //门派
     var family = null;
+    //阶段潜能计算时候使用的等级上限
+    var skill_stage_limit = 800;
     //师门自动放弃
     var sm_loser = "开";
     //师门自动牌子
@@ -734,6 +736,17 @@
              this.add(70, function () {
                 KEY.dialog_confirm();
             });
+
+            //H 传送豪宅
+            this.add(72, function () {
+                WG.go("住房-练功房");
+            });
+
+            //D 传送当铺
+            this.add(68, function () {
+                 WG.SendCmd("$to 扬州城-当铺;$wait 200;list %唐楠%");
+            });
+
             this.add(83, function () {
                 KEY.do_command("stopstate");
             });
@@ -4051,6 +4064,11 @@
                     wudao_pfm = $('#wudao_pfm').val();
                     GM_setValue(role + "_wudao_pfm", wudao_pfm);
                 });
+                skill_stage_limit
+                $('#skill_stage_limit').focusout(function () {
+                    skill_stage_limit = $('#skill_stage_limit').val();
+                    GM_setValue(role + "_skill_stage_limit", skill_stage_limit);
+                });
                 $('#sm_loser').click(function () {
                     sm_loser = WG.switchReversal($(this));
                     GM_setValue(role + "_sm_loser", sm_loser);
@@ -6125,7 +6143,7 @@
                     name: "常用地点",
                     "items": {
                         "mp0": {
-                            name: "豪宅",
+                            name: "豪宅(H)",
                             callback: function (key, opt) {
                                 WG.go("住房-练功房");
                             },
@@ -6143,7 +6161,7 @@
                             },
                         },
                         "mp1": {
-                            name: "当铺",
+                            name: "当铺(D)",
                             callback: function (key, opt) {
                                 if (WG.at("扬州城-当铺")) {
                                     WG.SendCmd("list %唐楠%");
