@@ -747,6 +747,20 @@
                  WG.SendCmd("$to 扬州城-当铺;$wait 200;list %唐楠%");
             });
 
+            //V仓库
+            this.add(86, function () {
+                if (WG.at("扬州城-钱庄")) {
+                    WG.Send("store");
+                } else {
+                    WG.go("扬州城-钱庄");
+                }
+            });
+
+            // . 打开插件设置
+            this.add(190, function () {
+                WG.setting();
+            });
+
             this.add(83, function () {
                 KEY.do_command("stopstate");
             });
@@ -2963,6 +2977,7 @@
             eqlist[type] = [];
             GM_setValue(role + "_eqlist", eqlist);
             messageAppend("清除套装" + type + "设置成功!", 1);
+
         },
         uneqall: function () {
             this.eqx = WG.add_hook("dialog", (data) => {
@@ -5148,13 +5163,40 @@
         syssetting: function () {
             return `<h3>插件</h3>
                     <div class="setting-item zdy_dialog" >
-                有空的话请点个star,您的支持是我最大的动力<a href="https://github.com/knva/wsmud_plugins" target="_blank">https://github.com/knva/wsmud_plugins</a>
-                </div>
+              </div>
+
+` + UI.html_switch('sm_loser', '师门自动放弃：', "sm_loser") + `
+
+` + UI.html_switch('sm_price', '师门自动牌子：', 'sm_price') + `
+
+` + UI.html_switch('sm_getstore', '师门自动仓库取：', "sm_getstore") + `
+
+` + UI.html_switch('marry_kiss', '自动喜宴：', "automarry") + `
+` + UI.html_switch('ks_Boss', '自动传到boss：', "autoKsBoss") + `
+
+  <div class="setting-item" >
+                <span><label for="auto_eq">BOSS击杀时自动换装： </label><select id="auto_eq" style="width:80px">
+                        <option value="0">关</option>
+                        <option value="1">套装1</option>
+                        <option value="2">套装2</option>
+                        <option value="3">套装3</option>
+                    </select>
+                </span>        </div>
+                <div class="setting-item" >
+                <span><label for="ks_pfm">BOSS叫杀延时(ms)： </label><input id="ks_pfm" name="ks_pfm" type="text" style="width:80px" value>
+                </span>        </div>
+                <div class="setting-item" >
+                <span><label for="ks_wait">BOSS击杀等待延迟(s)： </label><input id="ks_wait" name="ks_wait" type="text" style="width:80px" value="120">
+                </span>        </div>
+                <div class="setting-item" >
+                <div class="item-commands"><span class="update_store">更新存仓数据(覆盖)</span><span class="clean_dps">重置伤害统计</span></div>
+                    </div>
+                <div class="setting-item" >
+                <div class="item-commands"><span class="load_btn">加载云配置</span></div>
                 <div class="setting-item" >
                 <span><label for="welcome">欢迎语: </label><input id="welcome" name="welcome" type="text" style="width:80px" value>
-                </span>
                 </div>
-                <div class="setting-item" >
+                </span>
                 <span><label for="family">门派选择：</label><select id="family" style="width:80px">
                         <option value="武当">武当</option>
                         <option value="华山">华山</option>
@@ -5177,11 +5219,9 @@
                 <div class="setting-item" >
                 <span><label for="shieldkey">屏蔽关键字(用半角逗号分隔): </label><input id="shieldkey" name="shieldkey" type="text" style="width:80px" value>
                 </span>        </div>
-            ` + UI.html_switch('sm_loser', '师门自动放弃：', "sm_loser") + `
-
-                ` + UI.html_switch('sm_price', '师门自动牌子：', 'sm_price') + `
-
-                ` + UI.html_switch('sm_getstore', '师门自动仓库取：', "sm_getstore") + `
+ <div class="setting-item" >
+     <div class="item-commands"><span class="backup_btn">备份到云</span><span class="load_btn">加载云配置</span></div>
+</div>
                 <div class="setting-item" >
                 <span> <label for="zmlshowsetting"> 自命令显示位置： </label><select id="zmlshowsetting" style="width:80px">
                     <option value="0"> 物品栏 </option>
@@ -5193,24 +5233,6 @@
                 </span>        </div>
 
                 ` + UI.html_switch('getitemShow', '显示获得物品：', 'getitemShow') + `
-
-                ` + UI.html_switch('marry_kiss', '自动喜宴：', "automarry") + `
-
-                ` + UI.html_switch('ks_Boss', '自动传到boss：', "autoKsBoss") + `
-                <div class="setting-item" >
-                <span><label for="auto_eq">BOSS击杀时自动换装： </label><select id="auto_eq" style="width:80px">
-                        <option value="0">关</option>
-                        <option value="1">套装1</option>
-                        <option value="2">套装2</option>
-                        <option value="3">套装3</option>
-                    </select>
-                </span>        </div>
-                <div class="setting-item" >
-                <span><label for="ks_pfm">BOSS叫杀延时(ms)： </label><input id="ks_pfm" name="ks_pfm" type="text" style="width:80px" value>
-                </span>        </div>
-                <div class="setting-item" >
-                <span><label for="ks_wait">BOSS击杀等待延迟(s)： </label><input id="ks_wait" name="ks_wait" type="text" style="width:80px" value="120">
-                </span>        </div>
                 ` + UI.html_switch('autopfmswitch', '自动施法开关：', 'auto_pfmswitch') + `
                 <div class="setting-item" >
                 <span><label for="unautopfm"> 自动施法黑名单(填技能代码，使用半角逗号分隔)： </label>
@@ -5249,11 +5271,7 @@
                 <div class="setting-item" >
                 <div class="item-commands"><span class="update_id_all">初始化ID</span></div>
                         </div>
-                <div class="setting-item" >
-                <div class="item-commands"><span class="update_store">更新存仓数据(覆盖)</span><span class="clean_dps">重置伤害统计</span></div>
-                    </div>
-                <div class="setting-item" >
-                <div class="item-commands"><span class="backup_btn">备份到云</span><span class="load_btn">加载云配置</span></div>
+            
             </div>
 
             <h3>自定义按钮</h3>`
@@ -6076,9 +6094,10 @@
                             },
                         },
                         "xx1": {
-                            name: "清除套装1设置",
+                            name: "重新设定套装1",
                             callback: function (key, opt) {
                                 WG.eqhelperdel(1);
+                                 WG.eqhelper(1);
                             },
                         },
                         "yy0": {
@@ -6088,9 +6107,10 @@
                             },
                         },
                         "yy1": {
-                            name: "清除套装2设置",
+                            name: "重新设定套装2",
                             callback: function (key, opt) {
                                 WG.eqhelperdel(2);
+                                 WG.eqhelper(2);
                             },
                         },
                         "zz0": {
@@ -6100,9 +6120,10 @@
                             },
                         },
                         "zz1": {
-                            name: "清除套装3设置",
+                            name: "重新设定套装3",
                             callback: function (key, opt) {
                                 WG.eqhelperdel(3);
+                                 WG.eqhelper(3);
                             },
                         },
                         "uneq": {
@@ -6292,7 +6313,7 @@
                         }
                     },
                 },
-                "打开仓库": {
+                "打开仓库(V)": {
                     name: "打开仓库",
                     callback: function (key, opt) {
                         if (WG.at("扬州城-钱庄")) {
