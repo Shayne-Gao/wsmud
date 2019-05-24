@@ -54,7 +54,14 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         },
         scroll: function(name) {
+            let agent = navigator.userAgent.toLowerCase();
+            let isMobile = /ipad|iphone|android|mobile/.test(agent);
+            if (isMobile) {
+                console.log(agent);
+                return;
+            }
             if (name === undefined) return;
+            console.log(name)
             let a = $(name)[0].scrollTop,
                 b = $(name)[0].scrollHeight,
                 h = Math.ceil($(name).height()); // 向上取整
@@ -416,8 +423,22 @@
                     let leftTimeString = leftTime < 60 ? `${parseInt(leftTime)}分钟` : `${parseInt(leftTime / 60)}小时${parseInt(leftTime % 60)}分钟`;
                     $(".remove_lx").remove();
                     // 练习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋练习效率%－先天悟性%）
-                    $(".content-message pre").append(`练习${name}消耗了${parseInt(cost)}点潜能。\n当前等级:${level}/${djsx}）\n`);
-                    $(".content-message pre").append(`<span class="remove_lx">角色悟性: ${xtwx}＋${htwx}( ${lxxl}%)\n等级上限: ${djsx}级\n需要潜能: ${qianneng}\n需要时间: ${timeString}\n潜能耗尽时间 => ${leftTimeString}\n</span>`);
+                    $(".content-message pre").append(`练习${name}消耗了${parseInt(cost)}点潜能。\n当前等级:${level}/${djsx}\n`);
+                    let qn100level=parseInt((level+100)/100)*100
+                    let qn100=(qn100level*qn100level - level*level) *2.5 * k;
+                    let time100 = qn100/cost/12
+                    let time100Str = time100 < 60 ? `${parseInt(time100)}分钟` : `${parseInt(time100 / 60)}小时${parseInt(time100 % 60)}分钟`;
+
+                    let qn300level=parseInt((level+300)/100)*100
+                    let qn300=(qn300level*qn300level - level*level) *2.5 * k;
+                    let time300 = qn300/cost/12
+                    let time300Str = time300 < 60 ? `${parseInt(time300)}分钟` : `${parseInt(time300 / 60)}小时${parseInt(time300 % 60)}分钟`;
+
+                    let qnlimit=(funny.data_skill_limit*funny.data_skill_limit - level*level) *2.5 * k;
+                    let timelimit = qnlimit/cost/12
+                    let timelimitStr = timelimit < 60 ? `${parseInt(timelimit)}分钟` : `${parseInt(timelimit / 60)}小时${parseInt(timelimit % 60)}分钟`;
+                    $(".content-message pre").append(`<span class="remove_lx">角色悟性: ${xtwx}＋${htwx}( ${lxxl}%)\n拥有潜能:${ownQN} 耗尽需${leftTimeString}\n${qn100level}级 需潜能:${qn100/10000}万 需${time100Str}\n${qn300level}级 需潜能:${qn300/10000}万 需${time300Str}\n${funny.data_skill_limit}级 需潜能:${qnlimit/10000}万 需${timelimitStr}\n</span>`);
+
                     fn.scroll(".content-message");
                 } else if (funny.state === "你正在读书") {
                     // 学习每一跳的消耗公式＝（先天悟性＋后天悟性）×（1＋学习效率%－先天悟性%）×3
@@ -589,6 +610,21 @@
 
     $(document).ready(function() {
         // mobile
+
+        $("#login_panel ul").append(
+            $(`<li class="panel_item">一键登录</li>`).click(function() {
+                setTimeout(function(){ $("[command='LoginIn']").click()}, 100);
+                setTimeout(function(){ $("[command='SelectServer']").click()},1200);
+                setTimeout(function(){ $("[command='SelectRole']").click()}, 1500);
+
+            }),
+        )
+        $("#role_panel ul:first").append(
+                            $(`<li class="panel_item">返回用户名密码窗口</li>`).click(function() {
+                    setTimeout(function(){ $("[command='ToServerPanel']").click()}, 200);
+                    setTimeout(function(){ $("[command='ReLogin']").click()},1200);
+                }),
+        )
         let agent = navigator.userAgent.toLowerCase();
         let isMobile = /ipad|iphone|android|mobile/.test(agent);
         if (isMobile) {
@@ -614,20 +650,7 @@
         GM_addStyle(`.box{width:600px;flex: 0 0 auto;}`);
         GM_addStyle(`.container,.login-content{flex:1 0 auto;}`);
         GM_addStyle(`.left{order:-1;width:300px} .right{order:1;}`);
-        $("#login_panel ul").append(
-                            $(`<li class="panel_item">一键登录</li>`).click(function() {
-                    setTimeout(function(){ $("[command='LoginIn']").click()}, 100);
-                    setTimeout(function(){ $("[command='SelectServer']").click()},1200);
-                    setTimeout(function(){ $("[command='SelectRole']").click()}, 1500);
-
-                }),
-        )
-        $("#role_panel ul").append(
-                            $(`<li class="panel_item">返回用户名密码窗口</li>`).click(function() {
-                    setTimeout(function(){ $("[command='ToServerPanel']").click()}, 200);
-                    setTimeout(function(){ $("[command='ReLogin']").click()},1200);
-                }),
-        )
+   
         $(".left").append(
             $(`<div class="left-nav item-commands" style="text-align:center;margin-left:10px;"></div>`).append(
                 $(`<span id="click_role">属性</span>`).click(function() {
@@ -639,11 +662,11 @@
                     $(".left-hide").hide();
                     $(".left-skill").show();
                 }),
-                $(`<span>背包</span>`).click(function() {
-                     layoutPack();
-                    $(".left-hide").hide();
-                    $(".left-pack").show();
-                }),
+          //      $(`<span>背包</span>`).click(function() {
+         //            layoutPack();
+        //            $(".left-hide").hide();
+         //           $(".left-pack").show();
+          //      }),
                 $(`<span>刷新数据</span>`).click(function() {
                      refreshScore();
                      layoutSkill()
@@ -700,10 +723,7 @@
                         $(`<tr><td>技能上限</td><td colspan="3"><hig class="role_skill_limit"></hig></td></tr>`),
                          $(`<tr><td>练习效率</td><td class="role_lianxi_per"></td><td>学习效率</td><td class="role_study_per"></td></tr>`),
                         $(`<tr><td colspan="3"><hiy>技能信息</hiy></td></tr>`),
-                        $(`<tr><td>技能</td><td>等级</td><td>练满所需潜能</td></tr>`),
-
-
-
+                        $(`<tr><td>技能</td><td>等级</td><td>id</td></tr>`),
                     ),
                     $(`<tbody></tbody>`),
                 ),
@@ -711,6 +731,51 @@
             $(`<div class="left-pack left-hide"></div>`).append(
                 $(`<table><thead><hiy>还没敲</hiy></thead><tbody></tbody></table>`),
             ),
+            $(`<div class="left-nav item-commands" style="text-align:center;margin-left:1px;"></div>`).append(
+                 $(`<span>悟性装</span>`).click(function() {
+                     WG.SendCmd('stopstate')
+                      WG.eqhelper(2);
+                 }),
+                 $(`<span>打怪装</span>`).click(function() {
+                      WG.SendCmd('stopstate')
+                      WG.eqhelper(1);
+                 }),
+                $(`<span>花园</span>`).click(function() {
+                      WG.go('住房-小花园')
+                 }),
+                  $(`<span>练功</span>`).click(function() {
+                      toPractice()
+                      async function toPractice() {
+                          WG.go('住房-练功房')
+                          await fn.sleep(500);
+                          WG.eqhelper(2);
+                          await fn.sleep(500);
+                          $("[command=skills]").click();
+
+                     };
+                 }),
+                  $(`<span>花园</span>`).click(function() {
+                      WG.go('住房-小花园')
+                 }),
+                  $(`<span>花园</span>`).click(function() {
+                      WG.go('住房-小花园')
+                 }),
+                  $(`<span>武庙疗伤</span>`).click(function() {
+                        WG.go("扬州城-武庙");
+                         WG.Send("liaoshang");
+                 }),
+                  $(`<span>武道</span>`).click(function() {
+                      toWudao()
+                      async function toWudao() {
+                          WG.go("武道塔");
+                          WG.SendCmd('go enter')
+                          await fn.sleep(500);
+                          WG.eqhelper(1);
+                          await fn.sleep(500);
+
+                     };
+                 })
+             ),
             $(`<div class="left-console console"></div>`),
             $(`<div class="left-send item-commands"></div>`).append(
                 $(`<input type="text" readonly onfocus="this.removeAttribute('readonly');" id="send_value">`)
@@ -772,8 +837,8 @@
                     $(`<tr></tr>`).append(
                         $(`<td></td>`).append(`${skill.name}`),
                         $(`<td></td>`).append(`${skill.level}`),
-                      //  $(`<td></td>`).append(`${skill.id}`),
-					    $(`<td></td>`).append(`<hiy>${qianneng}</hiy>`),
+                        $(`<td></td>`).append(`${skill.id}`),
+					  //  $(`<td></td>`).append(`<hiy>${qianneng}</hiy>`),
 
                     ),
                 );
