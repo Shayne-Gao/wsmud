@@ -4714,17 +4714,9 @@ look men;open men
                 Server.uploadFlows();
             });
             $(".downloadFlows").on('click', _ => {
-                layer.confirm('拷贝成功将会完全覆盖原有角色流程！', {
-                    title: "<red>! 警告</red>",
-                    btn: ['那还是算了','好的继续'],
-                    shift: 2,
-                }, function(index){
+                layer.prompt({ title: '会覆盖原有角色流程!请输入角色流程获取码', formType: 1, shift: 2 }, function(pass, index){
                     layer.close(index);
-                }, function(){
-                    layer.prompt({ title: '输入角色流程获取码', formType: 1, shift: 2 }, function(pass, index){
-                        layer.close(index);
-                        Server.downloadFlows(pass);
-                    });
+                    Server.downloadFlows(pass);
                 });
             });
             $(".uploadTriggers").on('click', _ => {
