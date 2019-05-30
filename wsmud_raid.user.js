@@ -3159,7 +3159,7 @@
 #select ($_DungeonHpThreshold) = 副本内疗伤，当气血低于百分比,100|90|80|70|60|50|40|30|20|10,(_DungeonHpThreshold)
 #select ($_DungeonWaitSkillCD) = Boss战前等待技能冷却,打开|关闭,(_DungeonWaitSkillCD)
 #select ($_DungeonBagCleanWay) = 背包清理方案,不清理|售卖|存仓及售卖,(_DungeonBagCleanWay)
-#input ($_repeat) = 重复次数,1
+#input ($_repeat) = 重复次数,20
 #select ($_equipSet) = 更换套装?0为不换装,0|1|2|3,1
 #config
 [if] (arg0) != null
@@ -3186,6 +3186,7 @@ $eq (_equipSet)
         @cleanBag
     [else if] (_DungeonBagCleanWay) == 存仓及售卖
         @tidyBag
+    $wait 500
 ${SourceCodeHelper.appendHeader("    ", source)}
     cr;cr over
     ($_i) = (_i) + 1
@@ -3588,8 +3589,10 @@ go north;go north
             desc: "温府(2k+闪避)",
             source: `
 @print 👑 感谢 JiaQi Wan 分享此副本代码。
-jh fb 10 start1;cr cd/wen/damen
-look tree;climb tree;go north;go northeast
+jh fb 10 start1;
+cr cd/wen/damen
+look tree;climb tree;
+go north;go northeast
 [while] true
     [if] (:path) != cd/wen/zoulang4
         go northeast
