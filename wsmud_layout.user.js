@@ -54,12 +54,7 @@
             return new Promise(resolve => setTimeout(resolve, ms));
         },
         scroll: function(name) {
-            let agent = navigator.userAgent.toLowerCase();
-            let isMobile = /ipad|iphone|android|mobile/.test(agent);
-            if (isMobile) {
-                console.log(agent);
-                return;
-            }
+        
             if (name === undefined) return;
             console.log(name)
             let a = $(name)[0].scrollTop,
@@ -159,6 +154,12 @@
         sendmessage: function(message) {
             funny.webSocket.send(message);
             $(".console").append(`<div> >> ${message}</div>`);
+                let agent = navigator.userAgent.toLowerCase();
+            let isMobile = /ipad|iphone|android|mobile/.test(agent);
+            if (isMobile) {
+                console.log(agent);
+               return;
+            }
             fn.scroll(".console");
         },
         extends: {
@@ -745,15 +746,18 @@
                  }),
                   $(`<span>练功</span>`).click(function() {
                       toPractice()
-                      async function toPractice() {
-                          WG.go('住房-练功房')
-                          await fn.sleep(500);
-                          WG.eqhelper(2);
-                          await fn.sleep(500);
-                          $("[command=skills]").click();
-
-                     };
-                 }),
+                       async function toPractice() {
+                           if (funny.role.level == "<hig>武师</hig>" || funny.role.level == "<wht>武士</wht>" ){
+                               WG.go("帮会-练功房");
+                           }else{
+                               WG.go("住房-练功房");
+                           }
+                           await fn.sleep(500);
+                           $("[command=skills]").click();
+                           await fn.sleep(1500);
+                           WG.eqhelper(2);
+                       };
+                  }),
                   $(`<span>花园</span>`).click(function() {
                       WG.go('住房-小花园')
                  }),
