@@ -3186,7 +3186,7 @@ $eq (_equipSet)
         @cleanBag
     [else if] (_DungeonBagCleanWay) == 存仓及售卖
         @tidyBag
-    $wait 500
+    $wait 1000
 ${SourceCodeHelper.appendHeader("    ", source)}
     cr;cr over
     ($_i) = (_i) + 1
@@ -3535,6 +3535,30 @@ go east[4];go southeast;go south;go east;go south
     @cd
 @kill 莫大`
         },
+        {
+              name: "青城山",
+            source: `
+ jh fb 13 start1
+cr wuyue/qingcheng/shanlu
+go westup
+@kill 青城派弟子,青城派弟子
+go north
+go northup
+go eastup
+@kill 青城派弟子,青城派弟子
+go northup
+@kill 洪人雄
+go north[3]
+@kill 于人豪
+go north
+@kill 侯人英,罗人杰
+go south;go east
+@kill 余人彦
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd
+go north
+@kill 余沧海
+`},
         {
             name: "恒山",
             source: `
@@ -4685,14 +4709,14 @@ look men;open men
         },
         shortcut: function() {
             var content = `
+            <span class = "zdy-item downloadFlows" style="width:120px"> 导入全部流程 </span>
+            <span class = "zdy-item downloadTriggers" style="width:120px"> 导入全部触发 </span>
+            <span class = "zdy-item uploadFlows" style="width:120px"> 分享全部流程 </span>
+            <span class = "zdy-item uploadTriggers" style="width:120px"> 分享全部触发 </span>
             <span class = "zdy-item outMaze" style="width:120px"> 走出桃花林 </span>
             <span class = "zdy-item zhoubotong" style="width:120px"> 找到周伯通 </span>
             <span class = "zdy-item uploadConfig" style="width:120px"> 上传本地配置 </span>
             <span class = "zdy-item downloadConfig" style="width:120px"> 下载云端配置 </span>
-            <span class = "zdy-item uploadFlows" style="width:120px"> 分享角色流程 </span>
-            <span class = "zdy-item downloadFlows" style="width:120px"> 拷贝角色流程 </span>
-            <span class = "zdy-item uploadTriggers" style="width:120px"> 分享角色触发 </span>
-            <span class = "zdy-item downloadTriggers" style="width:120px"> 拷贝角色触发 </span>
             <span class = "zdy-item importFlow" style="width:120px"> 导入流程 </span>
             <span class = "zdy-item importTrigger" style="width:120px"> 导入触发器 </span>
             <!--<span class = "zdy-item translateCode" style="width:120px"> 流程转换修复 </span>-->
