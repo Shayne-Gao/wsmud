@@ -739,6 +739,9 @@
 
             //H 传送豪宅
             this.add(72, function () {
+                if (WG.at("住房-练功房")) {
+                    WG.go('住房-小花园')
+                }
                 WG.go("住房-练功房");
             });
 
@@ -817,6 +820,8 @@
             });
             this.add(89, function () {
                 inzdy_btn ? WG.zdybtnfunc(5) : WG.zdwk();
+                WG.reSetAllAuto()
+                WG.sendCmd("stopSSAuto->")
             });
             this.add(9, function () {
                 KEY.onRoomItemSelect();
@@ -2874,11 +2879,14 @@
                 console.log("复活挖矿");
                 WG.Send('relive');
                 WG.remove_hook(this.ksboss);
+
                 auto_command = GM_getValue(role + "_auto_command", auto_command);
                 if (auto_command && auto_command != null && auto_command != "" && auto_command != "null") {
                     WG.SendCmd(auto_command);
                 } else {
-                    WG.zdwk();
+                    WG.go("扬州城-武庙");
+                    WG.SendCmd('liaoshang;$wait 10000;$zdwk');
+
                 }
                 next = 0;
             }, 1000 * ks_wait);
@@ -6022,6 +6030,12 @@
                         return timer == 0;
                     },
                     "items": {
+                        "一键请安": {
+                            name: "一键请安",
+                            callback: function (key, opt) {
+                                WG.oneKeyQA();
+                            },
+                        },
                         "自动武道": {
                             name: "自动武道",
                             callback: function (key, opt) {
@@ -6070,12 +6084,6 @@
                                 WG.oneKeyDaily();
                             },
                         },
-                        "一键请安": {
-                            name: "一键请安",
-                            callback: function (key, opt) {
-                                WG.oneKeyQA();
-                            },
-                        },
                         "一键扫荡": {
                             name: "一键扫荡",
                             callback: function (key, opt) {
@@ -6088,7 +6096,7 @@
                     name: "换装设置",
                     "items": {
                         "xx0": {
-                            name: "套装1设定或装备",
+                            name: "套装1设定或装备(打怪装)",
                             callback: function (key, opt) {
                                 WG.eqhelper(1);
                             },
@@ -6101,7 +6109,7 @@
                             },
                         },
                         "yy0": {
-                            name: "套装2设定或装备",
+                            name: "套装2设定或装备(悟性装)",
                             callback: function (key, opt) {
                                 WG.eqhelper(2);
                             },
@@ -6134,12 +6142,7 @@
                         },
                     }
                 },
-                "自命令,及自定监控": {
-                    name: "自命令,及自定监控",
-                    callback: function (key, opt) {
-                        WG.zml();
-                    },
-                },
+
                  "自动整理并清包": {
                             name: "自动整理并清包",
                             callback: function (key, opt) {
@@ -6160,12 +6163,60 @@
                         WG.oneKeyToMaster();
                     },
                 },
+                "去练功":{
+                    name:"去练功",
+                    callback: function (key,opt){
+                        toPractice()
+                        async function toPractice() {
+                            if (G.level && ( G.level.indexOf('武师') >= 0  ||G.level.indexOf('武士') >= 0 ) ){
+                                WG.go("帮会-练功房");
+                            }else{
+                                WG.go("住房-练功房");
+                            }
+                            await fn.sleep(500);
+                            $("[command=skills]").click();
+                            await fn.sleep(1500);
+                            WG.eqhelper(2);t
+                        };
+                    },
+                },
+                "武道塔":{
+                    name:"武道塔",
+                    callback: function (key,opt){
+                        toWudao()
+                      async function toWudao() {
+                          WG.go("武道塔");
+                          WG.SendCmd('go enter')
+                          await fn.sleep(500);
+                          WG.eqhelper(1);
+                          await fn.sleep(500);
+
+                     };
+                    },
+                },
+                "帮派摸紫":{
+                    name:"帮派摸紫",
+                    callback: function (key,opt){
+                        toGB()
+                      async function toGB() {
+                          WG.go("丐帮-林间小屋");
+                          WG.SendCmd('go south')
+                          WG.SendCmd('go west')
+                          await fn.sleep(500);
+                          WG.eqhelper(1);
+
+                     };
+                    },
+                },
                 "快捷传送": {
                     name: "常用地点",
                     "items": {
                         "mp0": {
                             name: "豪宅(H)",
                             callback: function (key, opt) {
+                                if (WG.at("住房-练功房")) {
+                                     WG.go('住房-小花园')
+                                }
                                 WG.go("住房-练功房");
                             },
                         },
@@ -6260,7 +6311,7 @@
                             callback: function (key, opt) {
                                 let myDate = new Date();
                                 if (myDate.getHours() >= 17) {
-                                    WG.go("华山派-落雁峰");
+                                    WG.go("华山派-客厅");
                                 } else {
                                     WG.go("华山派-落雁峰");
                                 }
@@ -6271,7 +6322,7 @@
                             callback: function (key, opt) {
                                 let myDate = new Date();
                                 if (myDate.getHours() >= 17) {
-                                    WG.go("峨眉派-小屋");
+                                    WG.go("峨眉派-清修洞");
                                 } else {
                                     WG.go("峨眉派-小屋")
                                 }
@@ -6339,16 +6390,22 @@
                         WG.calc();
                     },
                 },
+                "自命令,及自定监控": {
+                    name: "自命令,及自定监控",
+                    callback: function (key, opt) {
+                        WG.zml();
+                    },
+                },
                 "调试BOSS": {
                     name: "调试BOSS",
                     visible: false,
                     callback: function (key, opt) {
                         WG.kksBoss({
-                            content: "听说枯荣大师出现在扬州城-广场一带。"
+                            content: "听说守门人出现在武道塔一带。"
                         });
                     },
                 },
-                "流程菜单Raid.js": {
+         /**       "流程菜单Raid.js": {
                     name: "流程菜单Raid.js",
                     callback: function (key, opt) {
                         if (unsafeWindow && unsafeWindow.ToRaid) {
@@ -6359,18 +6416,25 @@
                         }
                     }
                 },
+**/
                 "设置": {
                     name: "设置",
                     callback: function (key, opt) {
                         WG.setting();
                     },
                 },
-                "打开面板": {
+                "打开/隐藏面板和流程菜单": {
                     name: "打开面板",
                     visible: function (key, opt) {
                         return $('.WG_log').css('display') == 'none';
                     },
                     callback: function (key, opt) {
+                          if (unsafeWindow && unsafeWindow.ToRaid) {
+                            unsafeWindow.ToRaid.menu();
+                        } else {
+                            messageAppend("插件未安装,请访问 https://greasyfork.org/zh-CN/scripts/375851-wsmud-raid 下载并安装");
+                            window.open("https://greasyfork.org/zh-CN/scripts/375851-wsmud-raid ", '_blank').location;
+                        }
                         WG.showhideborad();
                     },
                 },
