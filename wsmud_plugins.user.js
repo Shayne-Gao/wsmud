@@ -3824,6 +3824,7 @@
             await WG.sleep(2000);
             WG.SendCmd("select $findPlayerByName(\"" + sx + "\");$wait 200;ask2 $findPlayerByName(\"" + sx + "\")");
             await WG.sleep(1000);
+            WG.zdwk();
 
         },
         sd_hook: undefined,
@@ -4476,7 +4477,8 @@
                     if (data.state == null) {
                         state = '空闲'
                     }
-                    document.title = `${shortRole}<${shortState}>`;
+                    //title 标题设定
+                    document.title = `${shortState}-[${family}]${shortRole}@${G.room_name}`;
                     oldTitle = document.title;
                     if (data.silence == undefined) {
                         if (data.desc != []) {
@@ -5962,14 +5964,15 @@
     var timerId;
     var oldTitle;
     function newtext() {
+        //标题滚动
         clearTimeout(timerId)
         var text = document.title;
         if(text=='undefined'){
            return;
         }
-        document.title = text.substring(1, text.length) + text.substring(0, 1)
-        text = document.title.substring(0, text.length)
-        timerId = setTimeout(function(){newtext()}, 500)
+    //    document.title = text.substring(1, text.length) + text.substring(0, 1)
+   //     text = document.title.substring(0, text.length)
+      //  timerId = setTimeout(function(){newtext()}, 500)
     }
 
     $(document).ready(function () {
@@ -6096,26 +6099,26 @@
                     name: "换装设置",
                     "items": {
                         "xx0": {
-                            name: "套装1设定或装备(打怪装)",
+                            name: "【穿】打怪装",
                             callback: function (key, opt) {
                                 WG.eqhelper(1);
                             },
                         },
                         "xx1": {
-                            name: "重新设定套装1",
+                            name: "【设定】打怪装",
                             callback: function (key, opt) {
                                 WG.eqhelperdel(1);
                                  WG.eqhelper(1);
                             },
                         },
                         "yy0": {
-                            name: "套装2设定或装备(悟性装)",
+                            name: "【穿】悟性装",
                             callback: function (key, opt) {
                                 WG.eqhelper(2);
                             },
                         },
                         "yy1": {
-                            name: "重新设定套装2",
+                            name: "【设定】悟性装",
                             callback: function (key, opt) {
                                 WG.eqhelperdel(2);
                                  WG.eqhelper(2);
@@ -6176,7 +6179,7 @@
                             await fn.sleep(500);
                             $("[command=skills]").click();
                             await fn.sleep(1500);
-                            WG.eqhelper(2);t
+                            WG.eqhelper(2);
                         };
                     },
                 },
