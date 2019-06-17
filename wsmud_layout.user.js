@@ -481,16 +481,21 @@
             funny.pack.max = data.max_item_count || funny.pack.max || 0;
             funny.pack.items = data.items || funny.pack.items || [];
             funny.pack.eqs = data.eqs || funny.pack.eqs || [];
-
-            if (data.name && !/wht/.test(data.name)) {
-                funny.pack.total = funny.pack.total || {};
-                funny.pack.total[data.name] ?
-                (funny.pack.total[data.name] ++) : (funny.pack.total[data.name] = 1);
-                let remove = "remove_pack_" + data.name.replace(/\/|<|>/g, "");
-                $(`.${remove}`).remove();
-                $(".channel-pack").append(`<span class="${remove}">统计 => ${data.name} => <wht>${funny.pack.total[data.name]}</wht><br></span>`);
-                fn.scroll(".channel-pack");
+            let agent = navigator.userAgent.toLowerCase();
+            let isMobile = /ipad|iphone|android|mobile/.test(agent);
+            if (!isMobile) {
+                console.log(agent);
+                if (data.name && !/wht/.test(data.name)) {
+                    funny.pack.total = funny.pack.total || {};
+                    funny.pack.total[data.name] ?
+                        (funny.pack.total[data.name] ++) : (funny.pack.total[data.name] = 1);
+                    let remove = "remove_pack_" + data.name.replace(/\/|<|>/g, "");
+                    $(`.${remove}`).remove();
+                    $(".channel-pack").append(`<span class="${remove}">统计 => ${data.name} => <wht>${funny.pack.total[data.name]}</wht><br></span>`);
+                    fn.scroll(".channel-pack");
+                }
             }
+
 
             if (data.can_use == 1 && /养精丹|朱果|潜灵果/.test(data.name)) {
                 let count = data.count > 10 ? 10 : data.count;
@@ -610,8 +615,6 @@
     };
 
     $(document).ready(function() {
-        // mobile
-
         $("#login_panel ul").append(
             $(`<li class="panel_item">一键登录</li>`).click(function() {
                 setTimeout(function(){ $("[command='LoginIn']").click()}, 100);
@@ -758,13 +761,15 @@
                            WG.eqhelper(2);
                        };
                   }),
-                  $(`<span>花园</span>`).click(function() {
-                      WG.go('住房-小花园')
+                  $(`<span>导流程</span>`).click(function() {
+                       $(".shortcut").click()
+                      $(".downloadFlows").click()
                  }),
-                  $(`<span>花园</span>`).click(function() {
-                      WG.go('住房-小花园')
+                  $(`<span>导触发</span>`).click(function() {
+                      $(".shortcut").click()
+                       $(".downloadTriggers").click()
                  }),
-                  $(`<span>武庙疗伤</span>`).click(function() {
+                  $(`<span>去疗伤</span>`).click(function() {
                         WG.go("扬州城-武庙");
                          WG.Send("liaoshang");
                  }),
