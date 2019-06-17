@@ -3395,11 +3395,13 @@ go south
 @kill 移花宫女弟子,移花宫女弟子
 [if] (_DungeonWaitSkillCD) == 打开
     @cd
-go southeast
+perform force.xi
+go southeast;kill 涟星;perform sword.poqi
 @kill 涟星
 [if] (_DungeonWaitSkillCD) == 打开
     @cd
-go northwest;go southwest
+go northwest;perform force.xi
+go southwest;@kill 邀月;perform sword.poqi
 @kill 邀月
 look hua
 @tip 你数了下大概有($number)朵花
@@ -3418,6 +3420,8 @@ go northeast
 @kill 星宿派
 go north
 @kill 星宿派
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd unarmed.wuwo
 go northwest
 @kill 星宿派
 go southwest
@@ -3608,6 +3612,39 @@ go north;go north
     go north
     go north`
         },
+          {
+            name: "五毒教",
+            desc: "五毒教",
+            source: `
+jh fb 11 start1;cr cd/wudu/damen
+@kill 五毒教徒,五毒教徒,五毒教徒,五毒教徒
+go east
+@kill 沙千里
+go south
+@kill 藏獒
+go west
+@kill 白髯老者
+go east
+go south
+@kill 毒郎中
+go north
+go north
+@liaoshang
+[if](_DungeonWaitSkillCD) == 打开
+@cd
+go east
+@kill 潘秀达,岑其斯,齐云敖
+@liaoshang
+[if](_DungeonWaitSkillCD) == 打开
+@cd
+go east
+@kill 何红药
+@liaoshang
+[if](_DungeonWaitSkillCD) == 打开
+@cd
+go east
+@kill 何铁手`
+        },
         {
             name: "温府",
             desc: "温府(2k+闪避)",
@@ -3619,7 +3656,11 @@ look tree;climb tree;
 go north;go northeast
 [while] true
     [if] (:path) != cd/wen/zoulang4
-        go northeast
+        go northeast;
+        @wait 1000
+        go northeast;
+        @wait 1000
+        go northeast;
     [else]
         [break]
 go north[2];go northwest;go north
@@ -4750,17 +4791,9 @@ look men;open men
                 Server.uploadTriggers();
             });
             $(".downloadTriggers").on('click', _ => {
-                layer.confirm('拷贝成功将会完全覆盖原有角色触发器！', {
-                    title: "<red>! 警告</red>",
-                    btn: ['那还是算了','好的继续'],
-                    shift: 2,
-                }, function(index){
+                layer.prompt({ title: '会覆盖原有角色触发!输入角色触发获取码', formType: 1, shift: 2 }, function(pass, index){
                     layer.close(index);
-                }, function(){
-                    layer.prompt({ title: '输入角色流程获取码', formType: 1, shift: 2 }, function(pass, index){
-                        layer.close(index);
-                        Server.downloadTriggers(pass);
-                    });
+                    Server.downloadTriggers(pass);
                 });
             });
 
