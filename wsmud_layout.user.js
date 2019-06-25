@@ -34,6 +34,9 @@
         data_autokill_xy: true,
         layout_left: true,
     };
+    let agent = navigator.userAgent.toLowerCase();
+    let isMobile = /ipad|iphone|android|mobile/.test(agent);
+
     unsafeWindow.funny = funny;
     let fn = {
         send: function(message) {
@@ -103,10 +106,12 @@
                         listener.extends.dialog.forEach(fn => fn(data));
                         break;
                     case "msg":
-                        listener.extends.msg.forEach(fn => fn(data));
-                        funny.onmessage_fn.apply(this, arguments);
-                        $(".channel").html("");
-                        return;
+                        if(isMobile==false){
+                            listener.extends.msg.forEach(fn => fn(data));
+                            funny.onmessage_fn.apply(this, arguments);
+                            $(".channel").html("");
+                            return;
+                        }
                     case "room":
                         listener.extends.room.forEach(fn => fn(message, data));
                         return;
@@ -176,6 +181,7 @@
     };
     unsafeWindow.listener = listener;
     listener.addListener("text", function(message) {
+
         let data = message.data;
         if (/重新连线|欢迎登陆/.test(data)) {
             funny.data_login += 1;
@@ -184,6 +190,9 @@
                 $(".content-message pre").append(`wsmud_funny ${funny.version} 苏轻/墨匿祝您游戏愉快！\n`);
                 getScore();
             }
+
+            console.log(isMobile);
+
             async function getScore() {
                 $("[command=score]").click();
                 await fn.sleep(100);
@@ -331,7 +340,7 @@
             let html = `门派请安 => ${qa}\n武道之塔 => ${wd1}/${wd2} ${wd3}\n`;
             html += `日常副本 => ${fb}/20\n师门任务 => ${sm1}/20 ${sm2}连\n`;
             html += `衙门追捕 => ${ym1}/20 ${ym2}连\n每周运镖 => ${yb1}/20 ${yb2}连\n`;
-            $(".remove_tasks").remove();
+      //      $(".remove_tasks").remove();
             $(".content-message pre").append($(`<span class="remove_tasks"><span>`).html(html));
             fn.scroll(".content-message");
         }
@@ -632,12 +641,13 @@
         let agent = navigator.userAgent.toLowerCase();
         let isMobile = /ipad|iphone|android|mobile/.test(agent);
         if (isMobile) {
+            //手机样式优化
             console.log(agent);
             return;
         }
         // 样式优化
         $(".signinfo").addClass("hide");
-        GM_addStyle(`.room_desc{overflow:hidden;}`);
+        GM_addStyle(`.room_desc{overflow:inline;}`);
         GM_addStyle(`.channel{display:none;}`);
         GM_addStyle(`.content-bottom{-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;}`);
         GM_addStyle(`.room-item>.item-name{margin-left:14px;}`);
@@ -748,18 +758,7 @@
                       WG.go('住房-小花园')
                  }),
                   $(`<span>练功</span>`).click(function() {
-                      toPractice()
-                       async function toPractice() {
-                           if (funny.role.level == "<hig>武师</hig>" || funny.role.level == "<wht>武士</wht>" ){
-                               WG.go("帮会-练功房");
-                           }else{
-                               WG.go("住房-练功房");
-                           }
-                           await fn.sleep(500);
-                           $("[command=skills]").click();
-                           await fn.sleep(1500);
-                           WG.eqhelper(2);
-                       };
+                      WG.toPractice()
                   }),
                   $(`<span>导流程</span>`).click(function() {
                        $(".shortcut").click()
