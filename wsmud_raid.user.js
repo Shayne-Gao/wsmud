@@ -50,8 +50,8 @@
     }
 
     /**
-     * @param {Array} list 
-     * @param {*} value 
+     * @param {Array} list
+     * @param {*} value
      * @param {Function} assert function(previous, current)
      */
     const SortInsert = function(list, value, assert) {
@@ -225,8 +225,8 @@
         }
 
         /**
-         * @param {string[]} cmds 
-         * @param {number} start block 首句在的 index 
+         * @param {string[]} cmds
+         * @param {number} start block 首句在的 index
          * @param {number} loopStart 最邻近的 while 的首句索引
          */
         _handleBlock(cmds, start, loopStart) {
@@ -295,7 +295,7 @@
                 default:
                 throw "未知的控制关键字: " + r.type;
             }
-        
+
             var cmdsLength = cmds.length;
             var i = 1;
             while (i < cmdsLength) {
@@ -328,7 +328,7 @@
                     i += 1;
                 }
             }
-        
+
             callback();
             return {type: r.type, cmds: result};
         }
@@ -725,7 +725,7 @@
     class AssertWrapper {
         /**
          * @param {Function} assert1 function(string)->Bool
-         * @param {string} text 
+         * @param {string} text
          */
         constructor(assert1) {
             var theSelf = this;
@@ -760,7 +760,7 @@
             this._assertHolders.push(holder);
         },
         /**
-         * @param {string} expression 
+         * @param {string} expression
          * @returns {Function} assert: function()
          */
         get: function(expression) {
@@ -1441,7 +1441,7 @@
     \***********************************************************************************/
 
     /**
-     * @param {String} source 
+     * @param {String} source
      * @param {Function} callback function(resolve)->void
      */
     function PerformerPromise(source, callback, log) {
@@ -1645,7 +1645,7 @@
     };
 
     /**
-     * @param {string} itemName 
+     * @param {string} itemName
      * @param {Boolean} blurry
      * @param {string} [quality] white(w), green(g), blue(b), yellow(y), purple(p), orange(o), red(r)
      */
@@ -1719,7 +1719,7 @@
             WG.add_hook("login", function(data) {
                 Role.id = data.id;
                 Role.status = [];
-                setTimeout(function() { 
+                setTimeout(function() {
                     $("span[command=skills]").click();
                     setTimeout(_ => { $(".glyphicon-remove-circle").click(); }, 500);
                 }, 2000); // 查看装备技能
@@ -2096,7 +2096,7 @@
                     Role.kongfu.bian = value; break;
                     case "throwing":
                     Role.kongfu.an = value; break;
-                    default: 
+                    default:
                     break;
                 }
             };
@@ -2468,7 +2468,7 @@
             ":maxMp": Role.maxMp,
             ":mpPer": Role.mp/Role.maxMp,    // 0-1
             ":living": Role.living,          // true/false
-            ":state": Role.state,            // RoleState 
+            ":state": Role.state,            // RoleState
             ":combating": Role.combating,    // true/false
             ":free": Role.isFree,
 
@@ -3150,20 +3150,32 @@
             return null;
         }
         const result = `
+@toolbar tasks
+@task 副本：<hig>($fb)/20</hig>|副本：<hik>($fb)/20</hik>
+($restDaily)=20-(fb)
+@print 已完成副本:(fb) 剩余(restDaily)
+[if] (restDaily)==0
+    ($restDaily)=1
 [if] (_DungeonHpThreshold) == null
     ($_DungeonHpThreshold) = 50
 [if] (_DungeonWaitSkillCD) == null
     ($_DungeonWaitSkillCD) = 打开
 [if] (_DungeonBagCleanWay) == null
     ($_DungeonBagCleanWay) = 存仓及售卖
+[if] (_DungeonCDExp) == null
+    ($_DungeonCDExp) = ^none
+[if] (_DungeonEquipSet) == null
+    ($_DungeonEquipSet)=1
 #select ($_DungeonHpThreshold) = 副本内疗伤，当气血低于百分比,100|90|80|70|60|50|40|30|20|10,(_DungeonHpThreshold)
 #select ($_DungeonWaitSkillCD) = Boss战前等待技能冷却,打开|关闭,(_DungeonWaitSkillCD)
 #select ($_DungeonBagCleanWay) = 背包清理方案,不清理|售卖|存仓及售卖,(_DungeonBagCleanWay)
-#input ($_repeat) = 重复次数,20
-#select ($_equipSet) = 更换套装?0为不换装,0|1|2|3,1
+#input ($_DungeonCDExp) = 等以下技能冷却,(_DungeonCDExp)
+
+#input ($_repeat) = 重复次数,(restDaily)
+#select ($_DungeonEquipSet) = 更换套装?0为不换装,0|1|2|3,1
 #config
 [if] (arg0) != null
-    ($_DungeonHpThreshold) = (arg0)
+   // ($_DungeonHpThreshold) = (arg0)
 [if] (arg1) != null
     ($_DungeonWaitSkillCD) = (arg1)
 [if] (arg2) != null
@@ -3172,7 +3184,8 @@
     ($_repeat) = (arg3)
 <-stopSSAuto
 stopstate
-$eq (_equipSet)
+$eq (_DungeonEquipSet)
+@print (arg0)
 <---
 ($hpPer) = (_DungeonHpThreshold)/100
 [if] (:hpPer) < (hpPer)
@@ -3208,7 +3221,7 @@ stopSSAuto->`
             source: `
 jh fam 9 start;go enter
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 @kill 武道塔守护者
 `
         },
@@ -3218,7 +3231,7 @@ jh fam 9 start;go enter
 @print 👑 感谢 koyodakla、freesunny 对此副本代码提供的帮助。
 jh fb 30 start1;cr huashan/lunjian/leitaixia
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go up
 @tip 恭喜你战胜了五绝
 @wait 1000
@@ -3249,11 +3262,11 @@ go south
 go east;go south
 @kill 说不得,彭莹玉
 [if] (_DungeonWaitSkillCD) == 打开
-   @cd
+   @cd (_DungeonCDExp)
 go north[2]
 @kill 韦一笑,殷天正
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north[2]
 @kill 张无忌,杨逍,范遥`
         },
@@ -3281,11 +3294,11 @@ go south
 go east;go south
 @kill 说不得,彭莹玉
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north[2]
 @kill 韦一笑,殷天正
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north[2]
 @kill 张无忌,杨逍,范遥`
         },
@@ -3295,18 +3308,23 @@ go north[2]
 jh fb 23 start2;cr murong/anbian 1 0
 go east;go east
 @kill 包不同
-go east;go south;go east;go south;go south
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd (_DungeonCDExp)
+go east;go south;go east;go south;
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd (_DungeonCDExp)
+go south
 @kill 王夫人
 go north;go north;go west;go north
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go east;go east;go east
 @kill 慕容复
 go west;go north
 look pai;bai pai[3]
 go north;search
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go south
 @kill 慕容博
 go east
@@ -3322,14 +3340,14 @@ go east;go south;go east;go south;go south
 @kill 王夫人
 go north;go north;go west;go north
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go east;go east;go east
 @kill 慕容复
 go west;go north
 look pai;bai pai[3]
 go north;search
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go south
 @kill 慕容博
 go east
@@ -3359,7 +3377,7 @@ go south;go south
 go south
 @kill 移花宫女弟子,移花宫女弟子
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go southeast
 @kill 涟星
 [if] {r邀月}? != null
@@ -3368,7 +3386,7 @@ go southeast
 [if] {邀月的尸体}? == null
     ($deadyaoyue) = false
     [if] (_DungeonWaitSkillCD) == 打开
-        @cd
+        @cd (_DungeonCDExp)
 go northwest;go southwest
 [if] ($deadyaoyue) == false
     @kill 邀月
@@ -3394,12 +3412,12 @@ go south;go south
 go south
 @kill 移花宫女弟子,移花宫女弟子
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 perform force.xi
 go southeast;kill 涟星;perform sword.poqi
 @kill 涟星
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go northwest;perform force.xi
 go southwest;@kill 邀月;perform sword.poqi
 @kill 邀月
@@ -3421,7 +3439,7 @@ go northeast
 go north
 @kill 星宿派
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd unarmed.wuwo
+    @cd (_DungeonCDExp) unarmed.wuwo
 go northwest
 @kill 星宿派
 go southwest
@@ -3429,7 +3447,7 @@ go southwest
 go south
 @kill 星宿派
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north;go northeast;go north
 @kill 丁春秋`
         },
@@ -3438,11 +3456,11 @@ go north;go northeast;go north
             source: `
 jh fb 19 start3;cr baituo/damen 2 0
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north[4]
 @kill 欧阳锋
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go south
 @kill 欧阳克,白衣少女
 go south[2];go west[3]
@@ -3464,7 +3482,7 @@ go south
 go east;go east
 @kill 曲灵风
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go east;go east
 @kill 黄药师
 go west;go north
@@ -3502,23 +3520,23 @@ select {黄蓉};give1 {黄蓉}
             source: `
 jh fb 16 start1;cr wuyue/songshan/taishi
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north[2]
 @kill 十三太保
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go northup;go northeast;go northup[2]
 @kill 十三太保,十三太保
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go northup;go north
 @kill 十三太保,十三太保,十三太保
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north
 @kill 十三太保,十三太保,十三太保,十三太保
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north
 @kill 左冷禅`
         },
@@ -3536,7 +3554,7 @@ go south[3];go west[2]
 @kill 曲洋,曲非烟
 go east[4];go southeast;go south;go east;go south
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 @kill 莫大`
         },
         {
@@ -3559,7 +3577,7 @@ go north
 go south;go east
 @kill 余人彦
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north
 @kill 余沧海
 `},
@@ -3574,6 +3592,7 @@ go north;go north
 @kill 定静师太,定闲师太,定仪师太
 
 ($path)=(:path)
+@cmdDelay 500
 [while] true
     <---
     @until (path)!=(:path)
@@ -3610,7 +3629,10 @@ go north;go north
     go northup
     go northup
     go north
-    go north`
+    go north
+@cmdDelay 1000
+`
+
         },
           {
             name: "五毒教",
@@ -3631,17 +3653,19 @@ go north
 go north
 @liaoshang
 [if](_DungeonWaitSkillCD) == 打开
-@cd
+  @cd (_DungeonCDExp)
 go east
 @kill 潘秀达,岑其斯,齐云敖
 @liaoshang
 [if](_DungeonWaitSkillCD) == 打开
-@cd
+  @cd (_DungeonCDExp)
+$eq (G_weaponID)
 go east
 @kill 何红药
 @liaoshang
+$eq (G_weaponID)
 [if](_DungeonWaitSkillCD) == 打开
-@cd
+  @cd (_DungeonCDExp)
 go east
 @kill 何铁手`
         },
@@ -3652,7 +3676,7 @@ go east
 @print 👑 感谢 JiaQi Wan 分享此副本代码。
 jh fb 10 start1;
 cr cd/wen/damen
-look tree;climb tree;
+look tree;climb tree;$stoppfm
 go north;go northeast
 [while] true
     [if] (:path) != cd/wen/zoulang4
@@ -3663,14 +3687,14 @@ go north;go northeast
         go northeast;
     [else]
         [break]
-go north[2];go northwest;go north
+go north[2];go northwest;go north;$startpfm
 look zhuang;tiao zhuang;perform dodge.power
 [if] {r温家老大 温方达%}? != null
     @kill 温方达
 @kill 温方义,温方山,温方施,温方南
 @wait 2000
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 look zhuang;tiao zhuang
 @until (:path) == cd/wen/xiaoyuan
 @wait 500
@@ -3689,23 +3713,23 @@ look tree;climb tree;go north;
 @kill 温方达
 go northeast
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go east
 @kill 温方南
 go west;go north;
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go east
 @kill 温方施
 go west;go northwest;go southwest
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go west
 @kill 温方山
 go east
 go south
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go west
 @kill 温方义
 go east;go north;go northeast;go north;tiao zhuang;tiao zhuang;go north
@@ -3733,7 +3757,7 @@ ask {r胡斐} about 阎基
         give {r胡斐} {b阎基的头颅}
         ask {r胡斐} about 胡家刀谱
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 @kill 胡斐
 go south;go east
 @kill 东北虎
@@ -3742,7 +3766,7 @@ go eastup
 go southup
 @kill 东北虎
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go eastup
 @kill 黑熊
 go westdown;go northdown;go west[2];go northwest
@@ -3772,7 +3796,7 @@ go east
 go north[2]
 @kill 神龙教弟子,神龙教弟子
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north
 @kill 洪安通,张淡月,无根道长`
         },
@@ -3794,7 +3818,7 @@ go east
 go north[2]
 @kill 神龙教弟子,神龙教弟子
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north
 @kill 洪安通,张淡月,无根道长`
         },
@@ -3814,7 +3838,7 @@ go west[5];
 @kill 吴六奇
 go north
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 @kill 陈近南
 go north
 go east
@@ -3882,7 +3906,7 @@ go north
 go south;go west
 @kill 家将,家将,女管家
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go west
 @kill 满洲第一勇士 鳌拜
 go east;go north
@@ -3918,7 +3942,7 @@ jh fb 1 start2;cr yz/cuifu/caizhu 1 0
 go north
 @kill 管家,家丁,家丁
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north
 @kill 财主 崔员外
 ($open) = 没开
@@ -3936,15 +3960,15 @@ look men;open men
 [if] (open) == 打开
     go east;go east;look gui;search gui`
         },
-        { 
-            name: "财主家(简单)", 
+        {
+            name: "财主家(简单)",
             source: `
 jh fb 1 start1;cr yz/cuifu/caizhu
 @kill 大狼狗,大狼狗
 go north
 @kill 管家,家丁,家丁
 [if] (_DungeonWaitSkillCD) == 打开
-    @cd
+    @cd (_DungeonCDExp)
 go north
 @kill 财主 崔员外
 ($open) = 没开
@@ -4086,7 +4110,7 @@ look men;open men
                 }
             });
         },
-        
+
         shareFlowTrigger: function (username, password, type, data) {
             let value = data;
             value["author"] = username;
@@ -4301,17 +4325,17 @@ look men;open men
             return workflow;
         },
         /**
-         * @param {string} name 
-         * @param {{ id: string, repeat: number }[]} cmdGroupInfos 
+         * @param {string} name
+         * @param {{ id: string, repeat: number }[]} cmdGroupInfos
          */
         createWorkflowConfig: function(name, cmdGroupInfos) {
             var id = new Date().getTime();
             return this.updateWorkflowConfig(id, name, cmdGroupInfos);
         },
         /**
-         * @param {number} id 
-         * @param {string} name 
-         * @param {{ id: string, repeat: number }[]} cmdGroupInfos 
+         * @param {number} id
+         * @param {string} name
+         * @param {{ id: string, repeat: number }[]} cmdGroupInfos
          */
         updateWorkflowConfig: function(id, name, cmdGroupInfos) {
             if (name == null || !/\S+/g.test(name)) {
@@ -4333,7 +4357,7 @@ look men;open men
         removeWorkflowConfig: function(id) {
             GM_deleteValue(this._key(id));
         },
-        
+
         _prefix: "workflow@",
         _isMyKey: function(key) {
             return key.indexOf(this._prefix + Role.id) == 0;
@@ -4372,7 +4396,7 @@ look men;open men
                 const source = `($_i) = 0\n[while] (_i) < (arg0)\n${cmdsTextHasHeader}\n${header}($_i) = (_i) + 1`;
                 WorkflowConfig.createWorkflow(g.name, source, "原命令组");
             });
-            
+
             allWorkflow.forEach(f => {
                 const infos = WorkflowConfigManager.getCmdGroupInfos(f.id);
                 let source = "";
@@ -4641,7 +4665,7 @@ look men;open men
             const key = `key${this._counter}`;
             this._counter += 1;
             this._performers[key] = p;
-            p.start(_ => { 
+            p.start(_ => {
                 delete ManagedPerformerCenter._performers[key];
                 if (ManagedPerformerCenter.getAll().length == 0) {
                     $("#workflows-button").css("border-color", "inherit");
@@ -5045,13 +5069,13 @@ look men;open men
                 methods: {
                     createSpan: function(createElement, item) {
                         let style = {
-                            width: "120px", 
+                            width: "120px",
                             "background-color": "#12e4a0",
                             border: "solid 1px rgb(107, 255, 70)",
                             color: "#000dd4"
                         };
                         if (item.type == "finder") {
-                            style = { 
+                            style = {
                                 width: "120px",
                                 "background-color": "#0359c3",
                                 border: "solid 1px rgb(107, 203, 255)",
@@ -5077,7 +5101,7 @@ look men;open men
                             }
                         };
                         const leftProperties = {
-                            style: { 
+                            style: {
                                 width: "30px",
                                 float: "left",
                                 "background-color": "#ffffff4f",
@@ -5160,7 +5184,7 @@ look men;open men
                 methods: {
                     createSpan: function(createElement, flow) {
                         let style = {
-                            width: "120px", 
+                            width: "120px",
                             "background-color": "#05b77d",
                             border: "solid 1px rgb(107, 255, 70)",
                             color: "white"
@@ -5186,7 +5210,7 @@ look men;open men
                             }
                         };
                         const leftProperties = {
-                            style: { 
+                            style: {
                                 width: "30px",
                                 float: "left",
                                 "background-color": "#ffffff4f",
@@ -5613,7 +5637,7 @@ look men;open men
         Ready
     \***********************************************************************************/
 
-    const ToRaid = { 
+    const ToRaid = {
         menu :UI.showToolbar,
 
         perform: function(content, name, log) {
