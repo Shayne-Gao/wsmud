@@ -1221,10 +1221,7 @@
             return false;
         },
         login: function () {
-            //为底边栏点击绑定一个dialog_close事件
-            $(".bottom-bar").on('click', function () {
-                 $(".dialog-close").click();
-            });
+
 
             role = $('.role-list .select').text().split(/[\s\n]/).pop();
             $(".bottom-bar").append("<span class='item-commands' style='display:none'><span WG='WG' cmd=''></span></span>"); //命令行模块
@@ -1607,6 +1604,29 @@
             return w.indexOf(p) == -1 ? false : true;
         },
 
+        //一键练习
+        toPractice: async function() {
+            if (G.level && ( G.level.indexOf('武师') >= 0  ||G.level.indexOf('武士') >= 0 ) ){
+                WG.go("帮会-练功房");
+            }else{
+                WG.go("住房-练功房");
+            }
+
+            await fn.sleep(1000);
+            WG.eqhelper(2);
+            await fn.sleep(2200);
+            WG.setting();
+            var trainQueue  = $("[id='auto_work']").val()
+            WG.SendCmd(trainQueue)
+            var w = $(".room-name").html();
+            await fn.sleep(500);
+            $("[command=skills]").click();
+
+            messageAppend("当前房间:"+w);
+            messageAppend("练习中,队列:");
+            messageAppend(trainQueue.replace(/,/g,"\n"));
+        },
+
         getIdByName: function (n) {
             for (let i = 0; i < roomData.length; i++) {
                 if (roomData[i].name && roomData[i].name.indexOf(n) >= 0) {
@@ -1970,7 +1990,7 @@
             var lists = $(".room_items .room-item");
             for (var npc of lists) {
                 if ($(npc).html().indexOf("尸体") == -1) {
-                    WG.Send("kill " + $(npc).attr("itemid"));
+                    WG.Send("stopstate;kill " + $(npc).attr("itemid"));
                 }
             }
         },
@@ -2500,7 +2520,7 @@
             return prompt("请输入需要秒进秒退的副本次数", "");
         },
         grove_auto: function (needG = null) {
-            return prompt("暂时停用，太浪费精力了", "");
+          //  return prompt("暂时停用，太浪费精力了", "");
             if (timer == 0) {
                 if (needG == null) {
                     this.needGrove = this.grove_ask_info();
@@ -5984,18 +6004,18 @@
             server.setAttribute('src', 'https://cdn.staticfile.org/layer/2.3/layer.js');
             document.head.appendChild(server);
             console.log("layer 加载完毕!");
-            setInterval(() => {
-                var h = '';
-                if (parseInt(Math.random() * 10) < 3) {
-                    h = "<hir>【插件】有任何问题欢迎加入 武神传说-仙界 367657589 进行技术交流，脚本讨论。\n<hir>"
-                } else if (parseInt(Math.random() * 10) < 6) {
-                    h = "<hir>【插件】欢迎登录 http://wsmud.bobcn.me 进行流程及触发器技术交流，脚本讨论。\n<hir>";
-                } else if (parseInt(Math.random() * 10) < 10) {
-                    h = "<hir>【插件】欢迎访问 https://suqing.fun/wsmud 苏轻 助你武神之路上更加轻松愉快。\n<hir>";
-                }
-                parseInt(Math.random() * 10) < 2 ? $('.channel pre').append(h) : console.log("");
-                $(".channel")[0].scrollTop = 99999;
-            }, 320 * 1000);
+//             setInterval(() => {
+//                 var h = '';
+//                 if (parseInt(Math.random() * 10) < 3) {
+//                     h = "<hir>【插件】有任何问题欢迎加入 武神传说-仙界 367657589 进行技术交流，脚本讨论。\n<hir>"
+//                 } else if (parseInt(Math.random() * 10) < 6) {
+//                     h = "<hir>【插件】欢迎登录 http://wsmud.bobcn.me 进行流程及触发器技术交流，脚本讨论。\n<hir>";
+//                 } else if (parseInt(Math.random() * 10) < 10) {
+//                     h = "<hir>【插件】欢迎访问 https://suqing.fun/wsmud 苏轻 助你武神之路上更加轻松愉快。\n<hir>";
+//                 }
+//                 parseInt(Math.random() * 10) < 2 ? $('.channel pre').append(h) : console.log("");
+//                 $(".channel")[0].scrollTop = 99999;
+//             }, 320 * 1000);
         }, 2000);
         KEY.init();
         WG.init();
@@ -6007,6 +6027,35 @@
         unsafeWindow.messageAppend = messageAppend;
         unsafeWindow.send_cmd = send_cmd;
         unsafeWindow.roomData = roomData;
+        //手机修改样式
+         let agent = navigator.userAgent.toLowerCase();
+        let isMobile = /ipad|iphone|android|mobile/.test(agent);
+        if (isMobile) {
+            //手机样式优化
+            console.log(agent);
+
+          //  $(".content-room").attr("class","content-room-old");
+         //   $(".content-message").after($(`<div class="content-room"></div>`));
+          //  $(".content-room").html($(".content-room-old").html())
+         //   $(".content-room-old").html("")
+
+         //    GM_addStyle(`.content-room{ width: calc(100% - 40px);}`);
+          //    GM_addStyle(`.bottom-bar > .br-tool{display:none;}`);
+            GM_addStyle(`.bottom-bar > .tool-item {right: 35px;}`);
+             GM_addStyle(`.room_desc{overflow:scroll;white-space:nowrap; }`);
+
+           //为底边栏点击绑定一个dialog_close事件
+            $(".content-message").on('click', function () {
+                if(  $('div').hasClass('dialog hide') == false ){
+                     $(".dialog-close").click();
+                }
+            });
+            $(".bottom-bar").on('click', function () {
+                if(  $('div').hasClass('dialog hide') == false ){
+                     $(".dialog-close").click();
+                }
+            });
+        }
         $('.room-name').on('click', (e) => {
             e.preventDefault();
             $('.container').contextMenu({
@@ -6169,18 +6218,9 @@
                 "去练功":{
                     name:"去练功",
                     callback: function (key,opt){
-                        toPractice()
-                        async function toPractice() {
-                            if (G.level && ( G.level.indexOf('武师') >= 0  ||G.level.indexOf('武士') >= 0 ) ){
-                                WG.go("帮会-练功房");
-                            }else{
-                                WG.go("住房-练功房");
-                            }
-                            await fn.sleep(500);
-                            $("[command=skills]").click();
-                            await fn.sleep(1500);
-                            WG.eqhelper(2);
-                        };
+
+                        WG.toPractice()
+                    
                     },
                 },
                 "武道塔":{
@@ -6202,9 +6242,7 @@
                     callback: function (key,opt){
                         toGB()
                       async function toGB() {
-                          WG.go("丐帮-林间小屋");
-                          WG.SendCmd('go south')
-                          WG.SendCmd('go west')
+                          WG.SendCmd('stopstate;jh fam 6 start;go down;go east;go east;go east;go east')
                           await fn.sleep(500);
                           WG.eqhelper(1);
 
