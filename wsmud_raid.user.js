@@ -3378,7 +3378,7 @@ go south
 @kill 移花宫女弟子,移花宫女弟子
 [if] (_DungeonWaitSkillCD) == 打开
     @cd (_DungeonCDExp)
-go southeast
+perform force.xi;go southeast;kill 涟星;perform sword.poqi
 @kill 涟星
 [if] {r邀月}? != null
     @kill 邀月
@@ -3438,8 +3438,6 @@ go northeast
 @kill 星宿派
 go north
 @kill 星宿派
-[if] (_DungeonWaitSkillCD) == 打开
-    @cd (_DungeonCDExp) unarmed.wuwo
 go northwest
 @kill 星宿派
 go southwest
