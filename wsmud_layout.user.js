@@ -340,9 +340,10 @@
             let html = `门派请安 => ${qa}\n武道之塔 => ${wd1}/${wd2} ${wd3}\n`;
             html += `日常副本 => ${fb}/20\n师门任务 => ${sm1}/20 ${sm2}连\n`;
             html += `衙门追捕 => ${ym1}/20 ${ym2}连\n每周运镖 => ${yb1}/20 ${yb2}连\n`;
-      //      $(".remove_tasks").remove();
-            $(".content-message pre").append($(`<span class="remove_tasks"><span>`).html(html));
-            fn.scroll(".content-message");
+            messageAppend(html)
+         //   $(".remove_tasks").remove();
+      //     $(".content-message pre").append($(`<span class="remove_tasks"><span>`).html(html));
+        //    fn.scroll(".content-message");
         }
     });
     // score
@@ -757,8 +758,8 @@
                 $(`<span>花园</span>`).click(function() {
                       WG.go('住房-小花园')
                  }),
-                  $(`<span>练功</span>`).click(function() {
-                      WG.toPractice()
+                  $(`<span>炼药</span>`).click(function() {
+                      WG.SendCmd("$lianyao");
                   }),
                   $(`<span>导流程</span>`).click(function() {
                        $(".shortcut").click()
