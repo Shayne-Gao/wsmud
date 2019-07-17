@@ -22,7 +22,7 @@
 (function () {
     'use strict';
     var updateinfo = "🍋欢迎体验简单工具 \n 新增自定义按钮功能,启动请使用右键,切换菜单;设置请进入设置中设置\nQQ群 367657589 付费群 \n有问题请反馈\n";
-
+    updateinfo = "欢迎使用! 请关注网站随时进行更新,推广返利请咨询闲鱼";
     Array.prototype.baoremove = function (dx) {
         if (isNaN(dx) || dx > this.length) {
             return false;
@@ -54,7 +54,7 @@
             ws, ws_on_message;
         unsafeWindow.WebSocket = function (uri) {
             ws = new _ws(uri);
-            document.getElementsByClassName("signinfo")[0].innerHTML = "<HIR>武神传说SS插件正常运行！ QQ群 367657589</HIR>"
+            document.getElementsByClassName("signinfo")[0].innerHTML = "<HIR>武神传说SS插件正常运行！</HIR>"
             $('.signinfo').on('click', function () {
                 ProConsole.init();
             });
@@ -727,9 +727,7 @@
             this.add(27, function () {
                 KEY.dialog_close();
             });
-            this.add(192, function () {
-                $(".map-icon").click();
-            });
+
             this.add(32, function () {
                 KEY.dialog_confirm();
             });
@@ -762,6 +760,19 @@
             // . 打开插件设置
             this.add(190, function () {
                 WG.setting();
+            });
+            //打开地图
+            this.add(77, function () {
+                $(".map-icon").click();
+            });
+
+            //隐藏侧边栏
+            this.add(192, function () {
+                if ($('.left').css('display') == 'none') {
+                     $(".left").css('display','flex')
+                } else {
+                   $(".left").css('display','none')
+                }
             });
 
             this.add(83, function () {
@@ -807,7 +818,7 @@
                 inzdy_btn ? WG.zdybtnfunc(0) : WG.sm_button();
             });
             this.add(87, function () {
-                inzdy_btn ? WG.zdybtnfunc(1) : WG.go_yamen_task();
+                inzdy_btn ? WG.zdybtnfunc(1) : WG.toPractice();
             });
             this.add(69, function () {
                 inzdy_btn ? WG.zdybtnfunc(2) : WG.kill_all();
@@ -1606,15 +1617,18 @@
 
         //一键练习
         toPractice: async function() {
-            if (G.level && ( G.level.indexOf('武师') >= 0  ||G.level.indexOf('武士') >= 0 ) ){
-                WG.go("帮会-练功房");
-            }else{
-                WG.go("住房-练功房");
-            }
-
-            await fn.sleep(1000);
             WG.eqhelper(2);
-            await fn.sleep(2200);
+            await fn.sleep(3000);
+            if (WG.at("练功房")==false){
+                if (G.level && ( G.level.indexOf('武师') >= 0  ||G.level.indexOf('武士') >= 0 ) ){
+                    WG.go("帮会-练功房");
+                    await fn.sleep(3000);
+                }else{
+                    WG.go("住房-练功房");
+                    await fn.sleep(3000);
+                }
+            }
+       
             WG.setting();
             var trainQueue  = $("[id='auto_work']").val()
             WG.SendCmd(trainQueue)
@@ -2271,12 +2285,22 @@
                 if (G.wk_listener) return;
                 let tiejiang_id;
                 let wk_busy = false;
+                WG.SendCmd('eq $findItem("☆铁镐")');
                 G.wk_listener = WG.add_hook(["dialog", "text"], function (data) {
                     if (data.type == "dialog" && data.dialog == "pack") {
                         //检查是否装备铁镐
                         let tiegao_id;
                         if (data.name) {
-                            if (data.name == "<wht>铁镐</wht>") {
+                            if (data.name == "<hiy>铁镐</hiy>") {
+                                tiegao_id=data.id;
+                            }else if (data.name == "<hic>铁镐</hic>") {
+                                tiegao_id=data.id;
+                            }else if (data.name == "<hig>铁镐</hig>") {
+                                tiegao_id=data.id;
+                            }else if (data.name == "<wht>铁镐</wht>") {
+                                tiegao_id=data.id;
+                            }
+                            if (tiegao_id){
                                 WG.Send("eq " + data.id);
                                 WG.go("扬州城-矿山");
                                 WG.Send("wa");
@@ -2290,7 +2314,16 @@
                             } else {
                                 for (let i = 0; i < data.items.length; i++) {
                                     let item = data.items[i];
-                                    if (item.name.indexOf("铁镐") > -1) {
+                                    if (item.name.indexOf("<hiy>铁镐</hiy>") > -1) {
+                                        tiegao_id = item.id;
+                                        break;
+                                    }else if (item.name.indexOf("<hic>铁镐</hic>") > -1) {
+                                        tiegao_id = item.id;
+                                        break;
+                                    }else if (item.name.indexOf("<hig>铁镐</hig>") > -1) {
+                                        tiegao_id = item.id;
+                                        break;
+                                    }else if (item.name.indexOf("铁镐") > -1) {
                                         tiegao_id = item.id;
                                         break;
                                     }
@@ -2972,6 +3005,7 @@
             if (type == undefined || type == 0 || type > eqlist.length) {
                 return;
             }
+            WG.SendCmd("stopstate");
             if (eqlist == null || eqlist[type] == "") {
                 messageAppend("套装未保存,保存当前装备作为套装" + type + "!", 1);
                 this.eqx = WG.add_hook("dialog", (data) => {
@@ -4422,7 +4456,7 @@
 
                 $(".WG_log").after(html);
                 $(".sm_button").on("click", WG.sm_button);
-                $(".go_yamen_task").on("click", WG.go_yamen_task);
+                $(".go_yamen_task").on("click", WG.toPractice);
                 $(".kill_all").on("click", WG.kill_all);
                 $(".get_all").on("click", WG.get_all);
                 $(".sell_all").on("click", WG.clean_all);
@@ -4465,9 +4499,14 @@
                 }
             }
         },
+
+
         receive_message: function (msg) {
             if (!msg || !msg.data) return;
             var data;
+            var state=''
+            var shortState=''
+            var shortRole=''
             var deepCopy = function (source) {
                 var result = {};
                 for (var key in source) {
@@ -4491,14 +4530,10 @@
             if (silence == "开") {
                 if (data.type == 'state') {
                     let title =  "";
-                    let state = data.state;
-                    let shortState = `${state}`.substring(3,5);
-                    let shortRole = `${role}`.substring(-2);
-                    if (data.state == null) {
-                        state = '空闲'
+                    G.state = data.state
+                    if (state == null) {
+                        state = 'Zzzz'
                     }
-                    //title 标题设定
-                    document.title = `${shortState}-[${family}]${shortRole}@${G.room_name}`;
                     oldTitle = document.title;
                     if (data.silence == undefined) {
                         if (data.desc != []) {
@@ -4513,7 +4548,33 @@
                     }
 
                 }
+
+                 //title 标题设定
+                //2019年6月25日 19:46:07 从date.type=state中移出来.可能有性能问题?
+
+                if(G.state==undefined){
+                    shortState='Zzzz'
+                    if (G.room_name!=undefined){
+                        if (G.room_name.indexOf('副本') >= 0 ){
+                            shortState='副本'
+                        }
+                        if (G.room_name.indexOf('武道') >= 0 ){
+                            shortState='武道'
+                        }
+                    }
+                    if($(".state-bar .title").text().substring(3,5) == '死亡'){
+                        shortState='死亡'
+                    }
+                }else{
+                        shortState = `${G.state}`.substring(3,5);
+                 }
+                shortRole = `${role}`.substring(-2);
+                let buff= $(".status-item").text()
+                document.title = `${shortState}-[${family}]${shortRole}@${G.room_name}  ${buff}`;
+                //alert( `${shortState}-[${family}]${shortRole}@${G.room_name}  ${buff}`)
+
                 if (data.type == 'text') {
+
                     let pdata = data.msg;
                     let a = pdata.split(/.*造成<wht>|.*造成<hir>|<\/wht>点|<\/hir>点/);
                     if (a[2]) {
@@ -4524,6 +4585,7 @@
                     }
                 }
             }
+
             if (data.type == 'msg') {
                 if (shieldswitch == '开') {
                     if (shield != undefined &&
@@ -4538,6 +4600,7 @@
                     }
                 }
             }
+
 
 
             if (data.type == 'dialog' && data.t == 'fam' && data.k == undefined) {
@@ -4654,9 +4717,9 @@
             WG.Send("pack");
             // console.log(packData)
             for (let item of packData) {
-                if (item.name == n) {
+                if (item.name.indexOf(n) >= 0 ) {
                     if (p == "fenjie" || p == "drop") {
-                        if (item.name.indexOf("★") >= 0) {
+                        if (item.name.indexOf("★") >= 0 || item.name.indexOf("☆") >= 0) {
                             messageAppend("高级物品 ,不分解");
                             continue;
                         }
@@ -4713,6 +4776,21 @@
         zdwk: async function (idx = 0, n, cmds) {
             cmds = T.recmd(idx, cmds);
             WG.zdwk();
+            await WG.sleep(100);
+            WG.SendCmd(cmds);
+        },
+        lx: async function (idx = 0, n, cmds) {
+            cmds = T.recmd(idx, cmds);
+            WG.toPractice();
+            await WG.sleep(100);
+            WG.SendCmd(cmds);
+        },
+        lianyao: async function (idx = 0, n, cmds) {
+            cmds = T.recmd(idx, cmds);
+            WG.go("住房-炼药房");
+            WG.SendCmd("pack;eq $findItem('神木王鼎');eq $findItem('神木王鼎');");
+            WG.SendCmd('eq $findItem("神木王鼎")');
+            WG.SendCmd("lianyao 0 1;lianyao 0 2");
             await WG.sleep(100);
             WG.SendCmd(cmds);
         },
@@ -5132,7 +5210,7 @@
         },
         btnui: function () {
             return `<div class='WG_button'><span class='zdy-item sm_button'>师门(Q)</span>
-            <span class='zdy-item go_yamen_task'>追捕(W)</span>
+            <span class='zdy-item go_yamen_task'>练习(W)</span>
             <span class='zdy-item kill_all'>击杀(E)</span>
             <span class='zdy-item get_all'>拾取(R)</span>
             <span class='zdy-item sell_all'>清包(T)</span>
@@ -5301,7 +5379,7 @@
                 <div class="setting-item" >
                 <div class="item-commands"><span class="update_id_all">初始化ID</span></div>
                         </div>
-            
+
             </div>
 
             <h3>自定义按钮</h3>`
@@ -6147,12 +6225,12 @@
                 "换装设置": {
                     name: "换装设置",
                     "items": {
-                        "xx0": {
-                            name: "【穿】打怪装",
-                            callback: function (key, opt) {
-                                WG.eqhelper(1);
-                            },
-                        },
+//                         "xx0": {
+//                             name: "【穿】打怪装",
+//                             callback: function (key, opt) {
+//                                 WG.eqhelper(1);
+//                             },
+//                         },
                         "xx1": {
                             name: "【设定】打怪装",
                             callback: function (key, opt) {
@@ -6160,12 +6238,12 @@
                                  WG.eqhelper(1);
                             },
                         },
-                        "yy0": {
-                            name: "【穿】悟性装",
-                            callback: function (key, opt) {
-                                WG.eqhelper(2);
-                            },
-                        },
+//                         "yy0": {
+//                             name: "【穿】悟性装",
+//                             callback: function (key, opt) {
+//                                 WG.eqhelper(2);
+//                             },
+//                         },
                         "yy1": {
                             name: "【设定】悟性装",
                             callback: function (key, opt) {
@@ -6194,7 +6272,18 @@
                         },
                     }
                 },
-
+                "【穿】打怪装": {
+                    name: "【穿】打怪装",
+                    callback: function (key, opt) {
+                        WG.eqhelper(1);
+                    }
+                },
+                "【穿】悟性装": {
+                    name: "【穿】悟性装",
+                    callback: function (key, opt) {
+                        WG.eqhelper(2);
+                    }
+                },
                  "自动整理并清包": {
                             name: "自动整理并清包",
                             callback: function (key, opt) {
@@ -6220,7 +6309,7 @@
                     callback: function (key,opt){
 
                         WG.toPractice()
-                    
+
                     },
                 },
                 "武道塔":{
@@ -6247,6 +6336,13 @@
                           WG.eqhelper(1);
 
                      };
+                    },
+                },
+                "武庙疗伤": {
+                    name: "武庙疗伤",
+                    callback: function (key, opt) {
+                        WG.go("扬州城-武庙");
+                        WG.Send("liaoshang");
                     },
                 },
                 "快捷传送": {
