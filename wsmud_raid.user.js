@@ -3172,7 +3172,7 @@
 #input ($_DungeonCDExp) = 等以下技能冷却,(_DungeonCDExp)
 
 #input ($_repeat) = 重复次数,(restDaily)
-#select ($_DungeonEquipSet) = 更换套装?0为不换装,0|1|2|3,1
+#select ($_DungeonEquipSet) = 更换套装?,不换装|1|2|3,1
 #config
 [if] (arg0) != null
    // ($_DungeonHpThreshold) = (arg0)
@@ -3184,11 +3184,14 @@
     ($_repeat) = (arg3)
 <-stopSSAuto
 stopstate
-$eq (_DungeonEquipSet)
+[if] (_DungeonEquipSet) != 不换装
+  $eq (_DungeonEquipSet)
 @print (arg0)
 <---
 ($hpPer) = (_DungeonHpThreshold)/100
 [if] (:hpPer) < (hpPer)
+    [if] (:mpPer)< 0.1
+        @dazuo
     @liaoshang
 --->
 <-recordGains
@@ -3275,6 +3278,7 @@ go north[2]
             source: `
 @print 👑 感谢 dtooboss 分享此副本代码。
 jh fb 26 start1;cr mj/shanmen
+@cmdDelay 500
 go north;go west;go northwest
 @kill 冷谦
 go north
@@ -3352,6 +3356,40 @@ go south
 @kill 慕容博
 go east
 @kill 阿朱`
+        },
+           {
+            name: "燕子坞(不杀博哥)",
+            source: `
+jh fb 23 start1;cr murong/anbian
+go east;go east
+@kill 包不同
+go east;go south;go east;go south;go south
+@kill 王夫人
+go north;go north;go west;go north
+[if] (_DungeonWaitSkillCD) == 打开
+    @cd (_DungeonCDExp)
+go east;go east;go east
+@kill 慕容复
+go west;go north
+@kill 阿碧
+go east
+@kill 阿朱
+go west
+look pai;bai pai[3]
+go north;search
+[if] false
+    [if] (_DungeonWaitSkillCD) == 打开
+        @cd (_DungeonCDExp)
+    @liaoshang
+    enable sword tangshijianfa
+    go south;perform sword.wu
+    $wait 10000
+    enable sword dugujiujian2
+    $wait 4000
+    [if] (_DungeonWaitSkillCD) == 打开
+        @cd (_DungeonCDExp)
+    @kill 慕容博
+`
         },
         {
             name: "燕子坞(偷书)",
@@ -4029,6 +4067,7 @@ look men;open men
             const map = WorkflowConfig._rootList();
             const data = {map: map, flows: flows};
             const value = JSON.stringify(data);
+            console.log(value);
             Server._sync("uploadFlows", {id: Role.id, value: value}, pass => {
                 GM_setClipboard(pass);
                 alert(`角色流程上传成功，该角色流程会在服务器保存 24 小时。\n角色流程获取码：${pass}，已复制到系统剪切板。`);
@@ -4037,19 +4076,30 @@ look men;open men
             });
         },
         downloadFlows: function(pass) {
-            Server._sync("downloadFlows", {pass: pass}, value => {
-                let data = JSON.parse(value);
+            if(pass.length>100){
+                let data = JSON.parse(pass);
                 FlowStore.corver(data.flows);
                 WorkflowConfig._rootList(data.map);
                 console.log(data);
                 alert("拷贝角色流程成功！");
-            }, _ => {
-                alert("错误的角色流程获取码！");
-            });
+            }else{
+                Server._sync("downloadFlows", {pass: pass}, value => {
+                    let data = JSON.parse(value);
+                    FlowStore.corver(data.flows);
+                    WorkflowConfig._rootList(data.map);
+                    console.log(data);
+                    alert("拷贝角色流程成功！");
+                }, _ => {
+                    alert("错误的角色流程获取码！");
+                });
+            }
+
+
         },
         uploadTriggers: function() {
             const triggers = unsafeWindow.TriggerCenter.getAllData();
             const value = JSON.stringify(triggers);
+            console.log(value);
             Server._sync("uploadTriggers", {id: Role.id, value: value}, pass => {
                 GM_setClipboard(pass);
                 alert(`角色触发器上传成功，该角色流程会在服务器保存 24 小时。\n角色触发器获取码：${pass}，已复制到系统剪切板。`);
@@ -4058,14 +4108,20 @@ look men;open men
             });
         },
         downloadTriggers: function(pass) {
-            Server._sync("downloadTriggers", {pass: pass}, value => {
-                let data = JSON.parse(value);
-                unsafeWindow.TriggerCenter.corver(data);
-                console.log(data);
-                alert("拷贝角色触发器成功！");
-            }, _ => {
-                alert("错误的角色触发器获取码！");
-            });
+//             if(pass.length>20){
+//                 let data = JSON.parse(pass);
+//                 unsafeWindow.TriggerCenter.corver(data);
+//                 alert("拷贝角色触发器成功！");
+//             }else{
+                Server._sync("downloadTriggers", {pass: pass}, value => {
+                    let data = JSON.parse(value);
+                    unsafeWindow.TriggerCenter.corver(data);
+                    console.log(data);
+                    alert("拷贝角色触发器成功！");
+                }, _ => {
+                    alert("错误的角色触发器获取码！");
+                });
+//             }
         },
         getNotice: function() {
             const noticeDataKey = "NoticeDataKey";
@@ -4804,7 +4860,7 @@ look men;open men
                 Server.uploadFlows();
             });
             $(".downloadFlows").on('click', _ => {
-                layer.prompt({ title: '会覆盖原有角色流程!请输入角色流程获取码', formType: 1, shift: 2 }, function(pass, index){
+                layer.prompt({ title: '会覆盖原有角色流程!请输入角色流程获取码', formType: 2, shift: 2,maxlength: 99999 }, function(pass, index){
                     layer.close(index);
                     Server.downloadFlows(pass);
                 });
@@ -4813,7 +4869,7 @@ look men;open men
                 Server.uploadTriggers();
             });
             $(".downloadTriggers").on('click', _ => {
-                layer.prompt({ title: '会覆盖原有角色触发!输入角色触发获取码', formType: 1, shift: 2 }, function(pass, index){
+                layer.prompt({ title: '会覆盖原有角色触发!输入角色触发获取码', formType:2, shift: 2,maxlength: 99999 }, function(pass, index){
                     layer.close(index);
                     Server.downloadTriggers(pass);
                 });
