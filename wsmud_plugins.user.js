@@ -642,6 +642,11 @@
         2: [],
         3: []
     };
+    var skilllist = {
+       1: {},
+       2: {},
+       3: {}
+    };
     //自动施法黑名单
     var unauto_pfm = '';
     //自动施法开关
@@ -1461,7 +1466,7 @@
                     var stores = data.stores;
                     store_list = [];
                     for (let store of stores) {
-                        store_list.push(store.name);
+                        store_list.push(store.name.toLowerCase());
                     }
                     zdy_item_store = store_list.join(',');
                     $('#store_info').val(zdy_item_store);
@@ -1617,7 +1622,7 @@
 
         //一键练习
         toPractice: async function() {
-            WG.eqhelper(2);
+            WG.eqhelper(2,1);
             await fn.sleep(3000);
             if (WG.at("练功房")==false){
                 if (G.level && ( G.level.indexOf('武师') >= 0  ||G.level.indexOf('武士') >= 0 ) ){
@@ -1628,13 +1633,15 @@
                     await fn.sleep(3000);
                 }
             }
-       
+       //     var pillId = WG.find_item("冰心丹");
+        //    WG.SendCmd('[if] (:status food) == false use $findItem("冰心丹")');
             WG.setting();
             var trainQueue  = $("[id='auto_work']").val()
             WG.SendCmd(trainQueue)
             var w = $(".room-name").html();
             await fn.sleep(500);
-            $("[command=skills]").click();
+            $(".dialog-close").click();
+           // $("[command=skills]").click();
 
             messageAppend("当前房间:"+w);
             messageAppend("练习中,队列:");
@@ -1899,7 +1906,7 @@
             setTimeout(() => {
                 let storestatus = false;
                 $(".obj-item").each(function () {
-                    if ($(this).html().indexOf(good) != -1) {
+                    if ($(this).html().toLowerCase().indexOf(good) != -1)  {
                         storestatus = true;
                         var id = $(this).attr("obj")
                         WG.Send("qu 1 " + id);
@@ -2119,7 +2126,7 @@
                     for (let i = 0; i < data.stores.length; i++) {
                         let s = null;
                         for (let j = 0; j < stores.length; j++) {
-                            if (stores[j].name == data.stores[i].name) {
+                            if (stores[j].name == data.stores[i].name.toLowerCase()) {
                                 s = stores[j];
                                 break;
                             }
@@ -2139,12 +2146,12 @@
                     for (var i = 0; i < data.items.length; i++) {
                         //仓库
                         if (store_list.length != 0) {
-                            if (WG.inArray(data.items[i].name, store_list) && store) {
+                            if (WG.inArray(data.items[i].name.toLowerCase(), store_list) && store) {
                                 if (data.items[i].can_eq) {
                                     //装备物品，不能叠加，计算总数
                                     let store = null;
                                     for (let j = 0; j < stores.length; j++) {
-                                        if (stores[j].name == data.items[i].name) {
+                                        if (stores[j].name == data.items[i].name.toLowerCase()) {
                                             store = stores[j];
                                             break;
                                         }
@@ -2219,6 +2226,16 @@
                 messageAppend("<hio>命令代码显示</hio>");
             }
         },
+        getItemNameByid: (id, callback) => {
+              packData.forEach(function (item) {
+                  if (item != 0) {
+                      if (item.id == id) {
+                          callback(item.name);
+                          return;
+                      }
+                  }
+              })
+          },
         addstore: (itemname) => {
             if (zdy_item_store == "") {
                 zdy_item_store = itemname;
@@ -2304,12 +2321,14 @@
                                 WG.Send("eq " + data.id);
                                 WG.go("扬州城-矿山");
                                 WG.Send("wa");
+                                WG.zdwk("remove");
                                 return;
                             }
                         } else if (data.items) {
                             if (data.eqs[0] && data.eqs[0].name.indexOf("铁镐") > -1) {
                                 WG.go("扬州城-矿山");
                                 WG.Send("wa");
+                                WG.zdwk("remove");
                                 return;
                             } else {
                                 for (let i = 0; i < data.items.length; i++) {
@@ -2787,6 +2806,19 @@
                 WG.auto_preform();
             }
         },
+        setautofpm: function(flag){
+            if(flag =='on'){
+                G.auto_preform = true;
+                messageAppend("<hio>自动施法</hio>开启");
+                WG.auto_preform();
+            }else{
+
+                G.auto_preform = false;
+                messageAppend("<hio>自动施法</hio>关闭");
+                WG.auto_preform("stop");
+            }
+
+        },
         auto_preform: function (v) {
             if (v == "stop") {
                 if (G.preform_timer) {
@@ -2810,7 +2842,7 @@
                 for (var skill of G.skills) {
                     if (family.indexOf("逍遥") >= 0) {
                         if (skill.id == "force.duo") {
-                            continue;
+                          //  continue;
                         }
                     }
                     if (WG.inArray(skill.id, blackpfm)) {
@@ -2861,19 +2893,18 @@
         },
         ksboss: undefined,
         kksBoss: function (data) {
-            var boss_place = data.content.match("出现在([^%]+)一带。");
-            var boss_name = data.content.match("听说([^%]+)出现在");
+            var boss_place = data.content.match("出现在([^%]+)一带。")[1];
+            var boss_name = data.content.match("听说([^%]+)出现在")[1];
             if (boss_name == null || boss_place == null) {
                 return;
             }
             blacklist = GM_getValue(role + "_blacklist", blacklist);
             blacklist = blacklist instanceof Array ? blacklist : blacklist.split(",");
-            if (WG.inArray(boss_name, blacklist)) {
+            if (WG.inArray(boss_name.replace("/<(.*?)>/g", ""), blacklist)) {
                 messageAppend("黑名单boss,忽略!");
                 return;
             }
-            boss_name = data.content.match("听说([^%]+)出现在")[1];
-            boss_place = data.content.match("出现在([^%]+)一带。")[1];
+
             autoKsBoss = GM_getValue(role + "_autoKsBoss", autoKsBoss);
             ks_pfm = GM_getValue(role + "_ks_pfm", ks_pfm);
             ks_wait = GM_getValue(role + "_ks_wait", ks_wait);
@@ -3001,44 +3032,83 @@
         },
 
         eqx: null,
-        eqhelper(type) {
+         eqhelper(type, enaskill = 0) {
             if (type == undefined || type == 0 || type > eqlist.length) {
                 return;
             }
             WG.SendCmd("stopstate");
             if (eqlist == null || eqlist[type] == "") {
                 messageAppend("套装未保存,保存当前装备作为套装" + type + "!", 1);
-                this.eqx = WG.add_hook("dialog", (data) => {
+                WG.eqx = WG.add_hook("dialog", (data) => {
                     if (data.dialog == "pack" && data.eqs != undefined) {
                         eqlist[type] = data.eqs;
                         GM_setValue(role + "_eqlist", eqlist);
                         messageAppend("套装" + type + "保存成功!", 1);
-                        WG.remove_hook(this.eqx);
+                        WG.remove_hook(WG.eqx);
+                    }
+                    if (data.dialog == 'skills' && data.items != null) {
+                        var nowskill = { 'throwing': '', 'unarmed': '', 'force': '', 'dodge': '', 'sword': '', 'blade': '', 'club': '', 'staff': '', 'whip': '', 'parry': '' };
+                        for (let item of data.items) {
+                            if (nowskill[item.id] != null) {
+                                if (item.enable_skill == null) {
+                                    nowskill[item.id] = 'none';
+                                } else {
+                                    nowskill[item.id] = item.enable_skill;
+                                }
+                            }
+                        }
+                        skilllist[type] = nowskill;
+                        GM_setValue(role + "_skilllist", skilllist);
+                        messageAppend("技能" + type + "保存成功!", 1);
                     }
                 });
+                WG.Send("cha");
                 WG.Send("pack");
             } else {
+                if (WG.eqx != null) {
+                    WG.remove_hook(WG.eqx);
+                    WG.eqx = null;
+                }
                 eqlist = GM_getValue(role + "_eqlist", eqlist);
-                let p_cmds = "";
-                for (let i = 1; i < eqlist[type].length; i++) {
-                    if (eqlist[type][i] != null) {
-
-                        p_cmds += ("$wait 20;eq " + eqlist[type][i].id + ";");
+                skilllist = GM_getValue(role + "_skilllist", skilllist);
+                var p_cmds = "";
+                if (true || enaskill === 0) {
+                    for (let i = 1; i < eqlist[type].length; i++) {
+                        if (eqlist[type][i] != null) {
+                            p_cmds += ("$wait 20;eq " + eqlist[type][i].id + ";");
+                        }
+                    }
+                    if (eqlist[type][0] != null) {
+                        p_cmds += ("$wait 40;eq " + eqlist[type][0].id + ";");
                     }
                 }
-
-                if (eqlist[type][0] != null) {
-                    p_cmds += ("$wait 40;eq " + eqlist[type][0].id + ";");
+                if (enaskill === 1) {
+                    p_cmds += (`$wait 5000`);
+                    for (var key in skilllist[type]) {
+                        p_cmds += (`$wait 40;enable ${key} ${skilllist[type][key]};`);
+                    }
                 }
+                p_cmds = p_cmds + '$wait 40;look3 1';
+                WG.eqx = WG.add_hook('text', function (data) {
+                    if (data.type == 'text') {
+
+                        if (data.msg.indexOf('没有这个玩家') >= 0) {
+                            messageAppend("套装或技能装备成功" + type + "!", 1);
+                            WG.remove_hook(WG.eqx);
+                        }
+                    }
+                });
                 WG.SendCmd(p_cmds);
-                messageAppend("套装装备成功" + type + "!", 1);
             }
         },
         eqhelperdel: function (type) {
             eqlist = GM_getValue(role + "_eqlist", eqlist);
+            skilllist = GM_getValue(role + "_skilllist", skilllist);
             eqlist[type] = [];
+            skilllist[type] = {};
             GM_setValue(role + "_eqlist", eqlist);
-            messageAppend("清除套装" + type + "设置成功!", 1);
+            GM_setValue(role + "_skilllist", skilllist);
+             messageAppend("清除套装 技能" + type + "设置成功!", 1);
 
         },
         uneqall: function () {
@@ -4044,6 +4114,7 @@
             _config.ks_pfm = GM_getValue(role + "_ks_pfm", ks_pfm);
             _config.ks_wait = GM_getValue(role + "_ks_wait", ks_wait);
             _config.eqlist = GM_getValue(role + "_eqlist", eqlist);
+             _config.skilllist = GM_getValue(role + "_skilllist", skilllist);
             _config.autoeq = GM_getValue(role + "_auto_eq", autoeq);
             _config.wudao_pfm = GM_getValue(role + "_wudao_pfm", wudao_pfm);
             _config.sm_loser = GM_getValue(role + "_sm_loser", sm_loser);
@@ -4087,6 +4158,7 @@
                     GM_setValue(role + "_ks_pfm", _config.ks_pfm);
                     GM_setValue(role + "_ks_wait", _config.ks_wait);
                     GM_setValue(role + "_eqlist", _config.eqlist);
+                    GM_setValue(role + "_skilllist", _config.skilllist);
                     GM_setValue(role + "_auto_eq", _config.autoeq);
                     GM_setValue(role + "_wudao_pfm", _config.wudao_pfm);
                     GM_setValue(role + "_sm_loser", _config.sm_loser);
@@ -4790,7 +4862,7 @@
             WG.go("住房-炼药房");
             WG.SendCmd("pack;eq $findItem('神木王鼎');eq $findItem('神木王鼎');");
             WG.SendCmd('eq $findItem("神木王鼎")');
-            WG.SendCmd("lianyao 0 1;lianyao 0 2");
+            WG.SendCmd("lianyao 0 2;lianyao 0 1");
             await WG.sleep(100);
             WG.SendCmd(cmds);
         },
@@ -6252,9 +6324,9 @@
                             },
                         },
                         "zz0": {
-                            name: "套装3设定或装备",
+                            name: "套装3装备",
                             callback: function (key, opt) {
-                                WG.eqhelper(3);
+                                WG.eqhelper(3,1);
                             },
                         },
                         "zz1": {
@@ -6273,15 +6345,15 @@
                     }
                 },
                 "【穿】打怪装": {
-                    name: "【穿】打怪装",
+                    name: "【穿】打怪装+技能",
                     callback: function (key, opt) {
-                        WG.eqhelper(1);
+                        WG.eqhelper(1,1);
                     }
                 },
                 "【穿】悟性装": {
-                    name: "【穿】悟性装",
+                    name: "【穿】悟性装+技能",
                     callback: function (key, opt) {
-                        WG.eqhelper(2);
+                        WG.eqhelper(2,1);
                     }
                 },
                  "自动整理并清包": {
@@ -6319,23 +6391,35 @@
                       async function toWudao() {
                           WG.go("武道塔");
                           WG.SendCmd('go enter')
-                          await fn.sleep(500);
-                          WG.eqhelper(1);
-                          await fn.sleep(500);
-
+                      
                      };
                     },
                 },
+                "武当":{
+                    name:"武当",
+                    callback: function (key,opt){
+                        toGB()
+                        async function toGB() {
+                            WG.go("武当派-后山小院");
+                        //    await fn.sleep(1500);
+                        //    WG.eqhelper(1);
+
+                        };
+                    },
+                },
                 "帮派摸紫":{
-                    name:"帮派摸紫",
+                    name:"武当帮派战",
                     callback: function (key,opt){
                         toGB()
                       async function toGB() {
-                          WG.SendCmd('stopstate;jh fam 6 start;go down;go east;go east;go east;go east')
-                          await fn.sleep(500);
-                          WG.eqhelper(1);
+                          //      WG.SendCmd('stopstate;jh fam 1 start;go west;go northup;go north;go west;go northup;go northup;go northup;go north;go north;go north;go north')
+                          WG.go("武当派-后山小院");
+                          await fn.sleep(3000);
+                          WG.eqhelper(1,1);
+                          TriggerCenter.activate('打残缺')
+                          TriggerCenter.activate('自动跑尸')
 
-                     };
+                      };
                     },
                 },
                 "武庙疗伤": {
@@ -6343,6 +6427,15 @@
                     callback: function (key, opt) {
                         WG.go("扬州城-武庙");
                         WG.Send("liaoshang");
+                    },
+                },
+                "吃冰心丹": {
+                    name: "吃练习打坐药",
+                    callback: function (key, opt) {
+
+                        var pillId = WG.find_item("冰心丹");
+                        WG.SendCmd('stopstate;use $findItem("冰心丹")');
+                        WG.toPractice();
                     },
                 },
                 "快捷传送": {
