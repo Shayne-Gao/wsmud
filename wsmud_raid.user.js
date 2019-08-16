@@ -4108,11 +4108,11 @@ look men;open men
             });
         },
         downloadTriggers: function(pass) {
-//             if(pass.length>20){
-//                 let data = JSON.parse(pass);
-//                 unsafeWindow.TriggerCenter.corver(data);
-//                 alert("拷贝角色触发器成功！");
-//             }else{
+            if(pass.length>100){
+                let data = JSON.parse(pass);
+                unsafeWindow.TriggerCenter.corver(data);
+                alert("拷贝角色触发器成功！");
+            }else{
                 Server._sync("downloadTriggers", {pass: pass}, value => {
                     let data = JSON.parse(value);
                     unsafeWindow.TriggerCenter.corver(data);
@@ -4121,7 +4121,7 @@ look men;open men
                 }, _ => {
                     alert("错误的角色触发器获取码！");
                 });
-//             }
+            }
         },
         getNotice: function() {
             const noticeDataKey = "NoticeDataKey";
@@ -4860,7 +4860,7 @@ look men;open men
                 Server.uploadFlows();
             });
             $(".downloadFlows").on('click', _ => {
-                layer.prompt({ title: '会覆盖原有角色流程!请输入角色流程获取码', formType: 2, shift: 2,maxlength: 99999 }, function(pass, index){
+                layer.prompt({ title: '会覆盖原有角色流程!请输入角色流程获取码', formType: 2, shift: 2,maxlength: 999999 }, function(pass, index){
                     layer.close(index);
                     Server.downloadFlows(pass);
                 });
@@ -4869,7 +4869,7 @@ look men;open men
                 Server.uploadTriggers();
             });
             $(".downloadTriggers").on('click', _ => {
-                layer.prompt({ title: '会覆盖原有角色触发!输入角色触发获取码', formType:2, shift: 2,maxlength: 99999 }, function(pass, index){
+                layer.prompt({ title: '会覆盖原有角色触发!输入角色触发获取码', formType:2, shift: 2,maxlength: 999999 }, function(pass, index){
                     layer.close(index);
                     Server.downloadTriggers(pass);
                 });
